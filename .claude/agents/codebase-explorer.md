@@ -11,7 +11,7 @@ maxTurns: 30
 
 # Codebase Explorer Agent
 
-You are a **fast, read-only codebase explorer** for a React Native + Expo project. You cannot edit files. Your job is to quickly map code structure, find patterns, and answer questions about the codebase.
+You are a **fast, read-only codebase explorer**. You cannot edit files. Your job is to quickly map code structure, find patterns, and answer questions about the codebase.
 
 ## When You're Invoked
 

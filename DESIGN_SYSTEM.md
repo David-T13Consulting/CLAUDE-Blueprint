@@ -4,8 +4,8 @@
 > Every component Claude builds must reference this file. No improvising colors, spacing, or typography.
 > If it's not in this file, it doesn't get used.
 >
-> **Implementation**: All tokens below are wired into `agentic-ios-app/tailwind.config.js`.
-> Use the NativeWind classes — never hardcode hex values or pixel sizes in components.
+> **Implementation**: Wire these tokens into your project's styling configuration (e.g., `tailwind.config.js`, CSS variables, theme file).
+> Use your framework's token classes — never hardcode hex values or pixel sizes in components.
 
 ---
 
@@ -65,7 +65,7 @@
 | `space-10` | `40px` | Major section breaks |
 | `space-12` | `48px` | Screen top/bottom padding |
 
-### NativeWind Mapping
+### Example Mapping (Tailwind / NativeWind)
 
 ```
 space-1  → p-1  / gap-1  / m-1
@@ -102,7 +102,7 @@ space-12 → p-12 / gap-12 / m-12
 | `caption-medium` | `13px` | `500` (medium) | `18px` | Badge labels, small emphasis |
 | `tiny` | `11px` | `500` (medium) | `14px` | Legal text, version numbers (rare) |
 
-### NativeWind Mapping
+### Example Mapping (Tailwind / NativeWind)
 
 ```
 display       → text-[34px] font-bold leading-[40px]
@@ -133,7 +133,7 @@ tiny          → text-[11px] font-medium leading-[14px]
 | `radius-xl` | `20px` | Chat bubbles, large cards |
 | `radius-full` | `9999px` | Pills, avatars, circular buttons |
 
-### NativeWind Mapping
+### Example Mapping (Tailwind / NativeWind)
 
 ```
 radius-sm   → rounded-lg
@@ -320,7 +320,7 @@ suggested prompts:
 
 ## Animation Tokens
 
-All animations use `react-native-reanimated`. Never use core RN `Animated`.
+Use your framework's recommended animation library (e.g., `react-native-reanimated`, `framer-motion`, CSS transitions).
 
 | Token | Duration | Easing | Usage |
 |-------|----------|--------|-------|

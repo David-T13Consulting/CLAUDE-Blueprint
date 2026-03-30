@@ -80,7 +80,7 @@ You are a **mentor, teacher, coach, and auditor** — and you operate as a **mul
 - **Modern UI** — Minimalist, beautiful, AI-native — the conversation IS the interface
 - **UX** — Accessible, responsive, delightful, human-centered design
 - **Monetization** — Unit economics that work. Revenue model designed, not bolted on.
-- **Legal & compliance** — Privacy policy, ToS, GDPR, App Store guidelines. No shortcuts.
+- **Legal & compliance** — Privacy policy, ToS, GDPR, platform guidelines. No shortcuts.
 - **User testing** — Real humans validate. Simulated research is a start, not a finish.
 - **Go-to-market** — Distribution planned before building. The best product nobody finds is a failure.
 
@@ -252,7 +252,7 @@ QUOTES: [anything they said unprompted]
 OVERALL: [would they use this again? honestly?]
 ```
 
-#### Stage 3: Beta Testing (Before App Store)
+#### Stage 3: Beta Testing (Before Production Launch)
 **Who**: 10-30 users from your target audience (not friends — real potential customers)
 **When**: After inner circle feedback is incorporated
 **How**: TestFlight public link, shared in relevant communities
@@ -273,7 +273,7 @@ What to ask (after they've used it for at least 3 days):
 
 #### Stage 4: Continuous Feedback (Post-Launch)
 - **In-app feedback**: "Was this helpful?" after key moments (thumbs up/down)
-- **App Store reviews**: Monitor daily. Respond to every 1-star review.
+- **Reviews and feedback**: Monitor daily. Respond to every negative review.
 - **Support channel**: Simple email or form. Every complaint is a gift.
 - **Usage analytics**: What features are used? Where do users drop off?
 
@@ -592,7 +592,7 @@ The system MUST surface decision checks automatically at these moments — witho
 |---------|--------|-----|
 | **Session start (first session on a new feature)** | Run `/checkpoint` logic silently. If any OVERDUE or BLOCKED items exist, surface them before starting work. | Prevents building on undecided foundations. |
 | **Gate approval** | After any gate (1-4) is approved, check if the NEXT phase has unresolved decisions. Surface any BLOCKED items. | Each gate transitions to a new phase with new decision requirements. |
-| **User says "let's ship" / "is it ready?" / "submit to App Store"** | Run `/readiness appstore` automatically. Do not proceed without a GO verdict. | Prevents shipping with unresolved blockers. |
+| **User says "let's ship" / "is it ready?" / "submit to production"** | Run `/readiness production` automatically. Do not proceed without a GO verdict. | Prevents shipping with unresolved blockers. |
 | **User says "TestFlight" / "beta" / "let's test"** | Run `/readiness testflight` automatically. | Beta builds still need safety and quality checks. |
 | **Before first commit of a feature** | Quick check: are BUILD phase decisions (B-01 through B-08) resolved? Surface any gaps. | Catches missing architectural decisions before code solidifies. |
 | **When a backlog Critical item is skipped** | Flag it. "Critical item B-00X is unresolved. Proceeding without it — is that intentional?" | Critical items exist for a reason. Skipping should be conscious. |
@@ -645,7 +645,7 @@ The system has a **priority hierarchy** for gathering information:
 Use **WebSearch** and **WebFetch** tools to find:
 - Current market data, competitor info, pricing benchmarks
 - API documentation for external services
-- Platform guidelines (Apple HIG, App Store review rules)
+- Platform guidelines (e.g., Apple HIG, Material Design, WCAG)
 - Technical best practices and library comparisons
 - Real-time data (weather APIs, pricing, availability)
 
@@ -925,7 +925,7 @@ User Input → [hook] → [service] → [API / DB]
 
 ### 1. Production-Ready Code Quality — The Critical Objective
 
-Every line of code in this project must be **shippable**. Not "good enough for a demo." Not "we'll refactor later." Production-ready means: if the App Store approved it tomorrow, we'd sleep well.
+Every line of code in this project must be **shippable**. Not "good enough for a demo." Not "we'll refactor later." Production-ready means: if it went live tomorrow, we'd sleep well.
 
 #### What Production-Ready Means
 
@@ -1001,7 +1001,7 @@ Before any change is merged, ask: *"If this shipped to 100,000 users tonight, wo
 - Unit tests for: services, hooks, utils
 - Integration tests for: agentic loop, API communication
 - Component tests for: screen rendering, user interactions
-- Use `jest` + `@testing-library/react-native`
+- Use your project's test framework (e.g., `jest`, `pytest`, `vitest`, etc.)
 
 ### 2. TypeScript — Zero `any` Policy
 
@@ -1061,7 +1061,7 @@ interface Tool<TInput, TOutput> {
 ### 4. Cybersecurity — OWASP Mobile Top 10
 
 #### M1: Improper Credential Storage
-- API keys stored via `expo-secure-store` (encrypted at rest) ✅
+- API keys stored via secure storage (encrypted at rest — e.g., Keychain, SecureStore, env vault) ✅
 - NEVER log API keys, even in dev mode
 - NEVER include keys in error messages sent to UI
 
@@ -1172,7 +1172,7 @@ Headers:
 | Tool result card | Expand from zero height | 250ms | spring |
 | Error toast | Slide down from top | 200ms | ease-out |
 
-Use `react-native-reanimated` for all animations. No `Animated` API from core RN.
+Use your framework's recommended animation system (e.g., `react-native-reanimated`, `framer-motion`, CSS transitions).
 
 #### Anti-Patterns — NEVER Do This
 
@@ -1214,7 +1214,7 @@ Every screen should pass this test: *"Would this feel at home next to iMessage, 
 #### Navigation
 - Consistent header styling ✅
 - Back navigation always available
-- Deep linking support (via expo-router scheme)
+- Deep linking / URL routing support
 
 ---
 
@@ -1310,14 +1310,17 @@ Before pushing any CI workflow, dependency file, or infrastructure config:
 | Growth optimization | SCALE | All 8 + cost analysis |
 
 ### Commands
+
+> **TEMPLATE**: Replace these with your project's actual commands.
+
 ```bash
-cd agentic-ios-app
+cd [YOUR_APP_DIRECTORY]
 npm install          # Install dependencies
-npx expo start       # Start dev server
-npm run lint         # Run ESLint
-npm run format       # Run Prettier
+npm run dev          # Start dev server
+npm run lint         # Run linter
+npm run format       # Run formatter
 npm test             # Run test suite
-npm run typecheck    # Run TypeScript compiler check
+npm run typecheck    # Run type checker
 ```
 
 ---
@@ -1349,8 +1352,8 @@ Every key user action must be tracked. Not everything — just what matters:
 Build these into the product, not as afterthoughts:
 
 1. **In-app feedback** — After key moments (e.g., "Was this helpful?" with thumbs up/down). Lightweight, contextual, non-intrusive.
-2. **App Store reviews** — Monitor and respond. Patterns in 1-star reviews reveal critical bugs.
-3. **Crash/error reporting** — Automated (Sentry, Bugsnag, or Expo's built-in). Every crash is a user who might not come back.
+2. **Store reviews / public feedback** — Monitor and respond. Patterns in negative reviews reveal critical bugs.
+3. **Crash/error reporting** — Automated (Sentry, Bugsnag, or your platform's built-in). Every crash is a user who might not come back.
 4. **Usage patterns** — Heatmaps of what's used vs. what's ignored. Unused features are candidates for removal.
 
 ### The Weekly Review
@@ -1434,7 +1437,8 @@ This is your #1 variable cost. Control it:
 
 ## Deployment & Release
 
-> **Code in a repo isn't a product. Code on a user's phone is.** The deployment pipeline is how value reaches users.
+> **Code in a repo isn't a product. Code in a user's hands is.** The deployment pipeline is how value reaches users.
+> **TEMPLATE**: The example below uses a mobile app (iOS) pipeline. Adapt for your platform (web, API, desktop, etc.).
 
 ### Release Pipeline
 
@@ -1443,15 +1447,13 @@ Code complete
       ↓
 CI passes (lint, typecheck, test, audit)
       ↓
-Build (EAS Build for iOS)
+Build (production build for your platform)
       ↓
 Internal testing (dev team, 1-2 days)
       ↓
-TestFlight beta (external testers, 3-7 days)
+Beta testing (external testers, 3-7 days)
       ↓
-App Store submission
-      ↓
-App Store review (1-3 days)
+Production submission / deployment
       ↓
 Staged rollout (10% → 25% → 50% → 100%)
       ↓
@@ -1460,57 +1462,34 @@ Monitor (crashes, errors, metrics for 48 hours)
 Stable release ✅
 ```
 
-### Expo EAS Setup
-
-```bash
-# Build for iOS (production)
-eas build --platform ios --profile production
-
-# Submit to App Store
-eas submit --platform ios
-
-# OTA update (no App Store review needed for JS-only changes)
-eas update --branch production --message "Fix: [description]"
-```
-
-### OTA Updates (Over-the-Air)
-
-Expo EAS Update allows instant JS-only patches without App Store review:
-
-- **Use for**: Bug fixes, copy changes, minor UI adjustments
-- **Don't use for**: Native module changes, new permissions, major features
-- **Always test**: OTA updates bypass App Store review — you ARE the QA
-- **Rollback ready**: Keep the previous update available for instant rollback
-
 ### Release Cadence
 
 | Type | Frequency | Channel |
 |------|-----------|---------|
-| **Hotfix** | As needed (critical bugs) | OTA update, immediate |
-| **Patch** | Weekly | OTA update or TestFlight |
-| **Minor release** | Biweekly | App Store |
-| **Major release** | Monthly or milestone-based | App Store with full regression |
+| **Hotfix** | As needed (critical bugs) | Fastest path available (OTA, hotfix deploy) |
+| **Patch** | Weekly | Standard deployment |
+| **Minor release** | Biweekly | Production with QA |
+| **Major release** | Monthly or milestone-based | Full regression before release |
 
 ### Rollback Plan
 
 When a release breaks something:
 
-1. **OTA-fixable** (JS-only issue): Push OTA update immediately. No App Store needed.
-2. **Native issue**: Revert the build on App Store Connect. Push previous known-good build.
+1. **Quick-fixable**: Push a hotfix through the fastest channel available.
+2. **Infrastructure/build issue**: Revert to previous known-good build.
 3. **Data issue**: If user data is corrupted, prioritize data recovery over feature rollback.
-4. **Communication**: If >1% of users are affected, notify via in-app banner or push notification.
+4. **Communication**: If >1% of users are affected, notify via in-app banner, email, or status page.
 
-### App Store Checklist
+### Pre-Release Checklist
 
-Before every submission:
+> **TEMPLATE**: Adapt this to your platform (App Store, Play Store, web, API, etc.)
 
-- [ ] App Store screenshots updated (if UI changed)
-- [ ] App description and "What's New" text updated
-- [ ] Privacy nutrition labels accurate (data collection disclosures)
-- [ ] No private API usage
-- [ ] AI-generated content disclosed per Apple guidelines
-- [ ] Minimum iOS version set correctly
-- [ ] Bundle version incremented
+- [ ] Screenshots / demo updated (if UI changed)
+- [ ] Release notes / changelog updated
+- [ ] Privacy/data disclosures accurate
+- [ ] AI-generated content disclosed per platform guidelines
+- [ ] Version number incremented
+- [ ] All CI checks passing
 
 ---
 
@@ -1520,16 +1499,16 @@ Before every submission:
 
 ### Privacy Policy (Required)
 
-Every app on the App Store must have a privacy policy. It must disclose:
+Every production app/service must have a privacy policy. It must disclose:
 
-- **What data you collect**: Location, API keys, conversation history, device info
-- **How you use it**: To provide AI responses, to personalize advice, to improve the service
-- **Who you share it with**: Anthropic (API calls contain conversation content), weather APIs (location data)
-- **How you store it**: On-device encryption (SecureStore), no server-side storage (if applicable)
+- **What data you collect**: User inputs, API keys, conversation history, device/browser info
+- **How you use it**: To provide AI responses, to personalize, to improve the service
+- **Who you share it with**: Third-party APIs (e.g., Anthropic API calls contain conversation content)
+- **How you store it**: Encryption method, on-device vs. server-side
 - **How users can delete their data**: Clear instructions for data deletion
 - **Contact information**: Email or form for privacy inquiries
 
-**Where to host**: A simple web page linked from App Store listing and in-app settings.
+**Where to host**: A simple web page linked from your app/service and any store listings.
 
 ### Terms of Service (Required)
 
@@ -1548,22 +1527,19 @@ Must cover:
 | **GDPR** (EU) | Any EU user | Consent before data collection, right to deletion, data portability, DPO if >250 employees |
 | **CCPA** (California) | Revenue >$25M or >50K users | Right to know, right to delete, right to opt out of sale |
 | **COPPA** (US) | Users under 13 | Parental consent required. Easiest path: don't target children |
-| **App Store Guidelines** | All iOS apps | Privacy nutrition labels, ATT framework for tracking, AI content disclosure |
+| **Platform Store Guidelines** | All published apps | Privacy disclosures, tracking consent, AI content disclosure |
 
-### Apple-Specific Requirements
+### Platform-Specific Requirements
 
-- **App Tracking Transparency (ATT)**: If you track users across apps/websites, you must show Apple's ATT prompt. If you don't track (recommended), declare it in Info.plist.
-- **Privacy nutrition labels**: Accurately declare all data collection in App Store Connect. Under-declaring can result in rejection.
-- **AI content disclosure**: Apple requires apps that generate content using AI to clearly disclose this to users. Add a visible label or disclaimer.
-- **In-App Purchase rules**: If you sell subscriptions, they MUST go through Apple's IAP system (Apple takes 15-30%). No linking to external payment.
+> **TEMPLATE**: Add requirements for your target platform(s) here.
+> Examples: Apple ATT, Google Play data safety, web cookie consent, etc.
 
 ### Compliance Checklist (Pre-Launch)
 
-- [ ] Privacy policy written, hosted, and linked in App Store listing + in-app
+- [ ] Privacy policy written, hosted, and linked in-app + any store listings
 - [ ] Terms of service written, hosted, and linked
-- [ ] AI disclaimer visible in app (e.g., footer in chat: "Powered by AI. Responses may be inaccurate.")
-- [ ] Privacy nutrition labels accurately configured in App Store Connect
-- [ ] ATT status declared (tracking or not tracking)
+- [ ] AI disclaimer visible in app (e.g., "Powered by AI. Responses may be inaccurate.")
+- [ ] Data collection disclosures accurate on all platforms
 - [ ] Data deletion mechanism available to users
 - [ ] Age rating set appropriately
 - [ ] GDPR consent flow implemented (if targeting EU users)
@@ -1577,15 +1553,15 @@ Must cover:
 
 ### Distribution Strategy
 
-#### App Store Optimization (ASO) — Your #1 Free Channel
-The App Store is a search engine. Treat it like one.
+#### Store / Listing Optimization — Your #1 Free Channel
 
-- **App name**: Include the primary keyword. "GardenAI — Smart Garden Assistant" beats "Verdant."
-- **Subtitle**: Second most important keyword field. Use it. "Personalized Plant Care & Reminders"
-- **Keywords field**: 100 characters. Research with tools like AppFollow or Sensor Tower. No spaces after commas.
-- **Description**: First 3 lines are visible without tapping "more." Lead with the value prop, not the feature list.
-- **Screenshots**: These sell the app more than anything. Show the app solving the problem, not empty UI. Add captions.
-- **Ratings**: Prompt happy users (after a positive moment, not on first open). Use `SKStoreReviewController` — Apple allows 3 prompts per year.
+> **TEMPLATE**: Adapt for your distribution channel (App Store, Play Store, Product Hunt, website, etc.)
+
+- **Name/title**: Include the primary keyword. "GardenAI — Smart Garden Assistant" beats "Verdant."
+- **Subtitle/tagline**: Second most important keyword opportunity. Use it.
+- **Description**: First 2-3 lines are visible without expanding. Lead with the value prop, not the feature list.
+- **Screenshots/visuals**: These sell the product more than anything. Show it solving the problem, not empty UI.
+- **Ratings/reviews**: Prompt happy users (after a positive moment, not on first open).
 
 #### Community Seeding — Your #1 Growth Lever Pre-Launch
 Go where your users already are:
@@ -1615,7 +1591,7 @@ Examples:
 ### Launch Strategy
 
 #### Phase 1: Soft Launch (Week -4 to -2)
-- TestFlight beta with 10-30 real users from target communities
+- Beta release to 10-30 real users from target communities
 - Collect feedback, fix critical issues, validate core value
 - Build a waitlist if there's organic demand
 
@@ -1625,12 +1601,12 @@ Examples:
 - Personal outreach to early supporters: "The app you tested is live!"
 
 #### Phase 3: Public Launch (Week 0)
-- App Store submission with optimized listing
+- Production submission with optimized listing
 - Social media announcement
 - Reach out to niche bloggers/YouTubers (not mainstream press — too early)
 
 #### Phase 4: Iterate (Week 1+)
-- Monitor App Store reviews daily
+- Monitor reviews and feedback daily
 - Respond to every review (positive and negative)
 - Push updates based on real feedback
 - Double down on channels that work. Kill channels that don't.
@@ -1641,7 +1617,7 @@ The system can help prepare, but YOU must execute:
 
 | System prepares | You execute |
 |----------------|------------|
-| Draft App Store description and metadata | Submit to App Store Connect |
+| Draft store/listing description and metadata | Submit to your platform |
 | Generate screenshot captions and layouts | Create actual screenshots on device |
 | Draft community posts and launch copy | Post them with your real account |
 | Research competitor keywords and ASO strategy | Choose final keywords |
@@ -1669,19 +1645,19 @@ The system can help prepare, but YOU must execute:
 
 ### Before Launch (Go-to-Market Phase)
 
-- [ ] **Apple Developer Account** ($99/year). Enrolled and active.
+- [ ] **Developer/platform account** enrolled and active (e.g., Apple $99/yr, Google $25 one-time, domain for web).
 - [ ] **Real user testing completed** (Stages 1-3 from User Testing Protocol)
 - [ ] **Privacy policy hosted** on a real URL (not just a file in the repo)
 - [ ] **Terms of service hosted** on a real URL
 - [ ] **Legal review** — have a real lawyer review your privacy policy and ToS. AI-generated legal documents are a starting point, not a legal opinion.
-- [ ] **App Store listing complete** — screenshots (taken on real device), description, keywords, age rating, privacy nutrition labels
+- [ ] **Store listing / landing page complete** — screenshots, description, keywords, age rating, privacy disclosures
 - [ ] **Marketing assets ready** — app icon (1024x1024), social media images, launch post drafts
 - [ ] **Support channel set up** — at minimum, an email address users can reach you at
-- [ ] **Payment infrastructure** (if monetizing at launch) — Apple IAP configured, subscription tiers set
+- [ ] **Payment infrastructure** (if monetizing at launch) — payment provider configured, subscription tiers set
 
 ### After Launch (Growth Phase)
 
-- [ ] **Monitor App Store reviews daily** for the first month. Respond to every 1-star review.
+- [ ] **Monitor reviews and feedback daily** for the first month. Respond to every negative review.
 - [ ] **Weekly metrics review** — are users activating? Retaining? Paying?
 - [ ] **Monthly user conversations** — talk to 2-3 active users. What do they love? What's missing?
 - [ ] **Kill decisions** — if something isn't working after the defined kill criteria period, either pivot or remove it. Don't cling.
