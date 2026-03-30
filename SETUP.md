@@ -45,7 +45,9 @@ Several sections in `CLAUDE.md` are marked with `> **TEMPLATE**:` notes. These c
 - **Legal & Compliance** — Add your platform's specific requirements
 - **Go-to-Market** — Adapt distribution strategy for your channel
 
-## Step 4: Customize Agents & Skills (Optional)
+> **Note**: Some sections (Deployment, Legal, Readiness) default to mobile/iOS examples. If you're building for web, API, or desktop, adapt the platform-specific parts. The core principles (validation gates, quality standards, security) apply to all platforms.
+
+## Step 5: Customize Agents & Skills (Optional)
 
 The agents in `.claude/agents/` and skills in `.claude/skills/` are generic and work as-is. You can:
 

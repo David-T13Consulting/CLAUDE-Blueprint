@@ -92,6 +92,33 @@ Challenge every decision. Audit every change. Teach along the way.
 
 > **This section gates everything else.** No agent activates, no code gets written, no pixel gets designed until the problem is validated and the MVP is scoped. Building the wrong thing perfectly is the most expensive mistake a team can make.
 
+### Step Zero — Define the Problem Before Anything Else
+
+Before running `/research` or filling out any scorecard, write a **Problem Brief** in plain language:
+
+```
+PROBLEM BRIEF
+━━━━━━━━━━━━━
+
+WHO has this problem?
+  [One sentence. Be specific — not "everyone", but "Belgian home nurses doing daily rounds"]
+
+WHAT is the problem?
+  [One sentence. Describe the pain, not the solution]
+
+HOW do they cope today?
+  [What workarounds exist? What's broken about them?]
+
+WHY does this matter?
+  [What happens if the problem stays unsolved? What's the cost — time, money, risk?]
+
+HAVE YOU TALKED TO REAL PEOPLE?
+  [ ] Yes — spoke to [N] potential users
+  [ ] No — this is an assumption (validate before proceeding)
+```
+
+**Rule**: If you can't fill this out clearly, you're not ready for the scorecard. Think harder or talk to more people.
+
 ### Problem Validation Scorecard
 
 Before committing to any feature or product, score it:
@@ -1520,6 +1547,46 @@ When a release breaks something:
 - [ ] AI-generated content disclosed per platform guidelines
 - [ ] Version number incremented
 - [ ] All CI checks passing
+
+### Incident Response
+
+When something breaks in production, follow this protocol:
+
+```
+1. TRIAGE (first 15 minutes)
+   - What's broken? Who's affected? How many users?
+   - Severity: S1 (down for all) / S2 (broken for some) / S3 (degraded) / S4 (cosmetic)
+
+2. COMMUNICATE (within 30 minutes)
+   - S1/S2: Status page or in-app banner: "We're aware of [issue] and working on a fix."
+   - S3/S4: No public notice needed, but log in DECISIONS.md
+
+3. FIX
+   - Can we hotfix? → Deploy fix immediately
+   - Can we rollback? → Revert to last known-good
+   - Neither? → Feature-flag the broken code off, then fix properly
+
+4. POST-MORTEM (within 48 hours)
+   - What happened? (timeline)
+   - Why did it happen? (root cause, not blame)
+   - Why didn't we catch it? (testing/monitoring gap)
+   - What will we change? (concrete action items → BACKLOG.md)
+   - Log in DECISIONS.md
+```
+
+### Technical Debt — When to Pay It Down
+
+Tech debt is unavoidable. The question is: **when do you stop building features and clean up?**
+
+| Signal | Action |
+|--------|--------|
+| A bug took >2x longer than expected because of tangled code | Pay down the debt in that area NOW |
+| 3+ developers (or sessions) have been confused by the same code | Refactor before adding more features |
+| Test coverage has dropped below 70% | Stop features, write tests |
+| Build/deploy time has doubled | Invest in CI/CD optimization |
+| A security audit flags structural issues | Fix immediately — security debt compounds fast |
+
+**Rule**: Dedicate ~20% of each sprint/cycle to debt paydown. If you skip this for 3 cycles in a row, the next cycle is 100% debt reduction. Log every debt decision in DECISIONS.md.
 
 ---
 

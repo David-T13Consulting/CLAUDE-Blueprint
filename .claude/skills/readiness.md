@@ -1,12 +1,12 @@
 # Skill: Launch Readiness Audit
 
 ## Trigger
-Invoke with `/readiness` when the team is considering shipping to TestFlight, App Store, or any external user.
+Invoke with `/readiness` when the team is considering shipping to beta, production, or any external user.
 
 Can also be invoked with a specific scope:
-- `/readiness testflight` — TestFlight beta readiness
-- `/readiness appstore` — App Store submission readiness
-- `/readiness ota` — OTA update readiness (JS-only changes)
+- `/readiness beta` — Beta/staging readiness
+- `/readiness production` — Full production release readiness
+- `/readiness hotfix` — Hotfix/patch readiness (minimal changes)
 
 ## Role
 You are the **Release Gatekeeper**. You run a comprehensive pre-flight checklist across code quality, security, legal, UX, performance, and business readiness. You produce a GO / NO-GO verdict with specific blockers.
@@ -14,9 +14,9 @@ You are the **Release Gatekeeper**. You run a comprehensive pre-flight checklist
 ## Process
 
 ### Step 1: Determine Release Target
-- **TestFlight** — Internal/beta testing. Looser standards, but code must be safe.
-- **App Store** — Public release. Every standard applies.
-- **OTA Update** — JS-only patch. Must not break existing installs.
+- **Beta** — Internal/beta testing. Looser standards, but code must be safe.
+- **Production** — Public release. Every standard applies.
+- **Hotfix** — Targeted patch. Must not break existing functionality.
 
 ### Step 2: Run All Checklists
 
@@ -26,100 +26,104 @@ Read the codebase, BACKLOG.md, DECISIONS.md, and PROJECT_STATE.md. Check each it
 
 ## Checklists by Release Target
 
-### TestFlight Readiness
+### Beta Readiness
 
 #### Code Quality
 | # | Check | How to Verify |
 |---|-------|---------------|
-| 1 | Zero `any` types in production code | Run `grep -r "any" --include="*.ts" --include="*.tsx" src/` |
-| 2 | No `console.log` in production code | Run `grep -r "console.log" --include="*.ts" --include="*.tsx" src/` |
-| 3 | No `// TODO` or `// FIXME` in shipped code | Run grep for TODO/FIXME |
+| 1 | No `any` types (if TypeScript) or equivalent type issues | Search source code |
+| 2 | No debug logging in production code | Search for `console.log`, `print()`, `debugger` |
+| 3 | No `// TODO` or `// FIXME` in shipped code | Grep for TODO/FIXME |
 | 4 | No commented-out code blocks | Manual review |
-| 5 | ESLint passes with zero warnings | Run `npm run lint` |
-| 6 | TypeScript compiles with zero errors | Run `npm run typecheck` |
-| 7 | All tests pass | Run `npm test` |
+| 5 | Linter passes with zero warnings | Run lint command |
+| 6 | Type checker passes with zero errors | Run typecheck command |
+| 7 | All tests pass | Run test suite |
 | 8 | No hardcoded secrets in code | Search for API keys, tokens, passwords |
 
 #### Safety
 | # | Check | How to Verify |
 |---|-------|---------------|
-| 9 | Agentic loop has depth limit | Check MAX_AGENT_ITERATIONS in agent.ts |
-| 10 | API calls have timeout (AbortController) | Check agent.ts for AbortController |
-| 11 | Input validation on user messages | Check chat screen for validation |
-| 12 | Conversation history is bounded | Check for max message limit |
-| 13 | API key stored in SecureStore | Check settings.tsx and storage calls |
+| 9 | Recursive/agentic loops are depth-limited | Check for max iteration constants |
+| 10 | API calls have timeouts | Check for AbortController or timeout config |
+| 11 | User input is validated | Check input handling code |
+| 12 | Data storage is bounded (no unbounded growth) | Review storage/history management |
+| 13 | Secrets stored securely (not in code, not in logs) | Review credential handling |
 
 #### Stability
 | # | Check | How to Verify |
 |---|-------|---------------|
-| 14 | Error boundary wraps the app | Check _layout.tsx |
+| 14 | Error boundary / global error handler exists | Check app entry point |
 | 15 | All async operations have error handling | Review catch blocks |
 | 16 | Loading states for all async operations | Review state management |
-| 17 | App doesn't crash on empty data | Test empty states |
+| 17 | App handles empty/null data gracefully | Test empty states |
 | 18 | App handles network failure gracefully | Review error handling |
 
-### App Store Readiness (includes all TestFlight checks plus:)
+### Production Readiness (includes all Beta checks plus:)
 
 #### Legal & Compliance
 | # | Check | How to Verify |
 |---|-------|---------------|
 | 19 | Privacy policy hosted at public URL | Ask Product Owner for URL |
-| 20 | Privacy policy linked in app settings | Check settings screen |
+| 20 | Privacy policy linked in app/service | Check settings or footer |
 | 21 | Terms of service hosted at public URL | Ask Product Owner for URL |
-| 22 | AI disclaimer visible in chat | Check chat screen for disclaimer text |
-| 23 | Privacy nutrition labels configured in App Store Connect | Ask Product Owner |
-| 24 | ATT status declared (tracking or not) | Check Info.plist |
-| 25 | Data deletion mechanism available | Check settings or support email |
-| 26 | Age rating set appropriately | Ask Product Owner |
-| 27 | GDPR consent flow (if EU users) | Check for consent UI |
+| 22 | AI disclaimer visible to users | Check UI for disclaimer text |
+| 23 | Data collection disclosures accurate on all platforms | Ask Product Owner |
+| 24 | Data deletion mechanism available | Check settings or support channel |
+| 25 | Age rating set appropriately | Ask Product Owner |
+| 26 | GDPR consent flow (if EU users) | Check for consent UI |
 
-#### App Store Listing
+#### Platform Listing (adapt to your platform)
+
+> **Mobile (App Store / Play Store)**:
+> Screenshots, app description, keywords, version, icon, store-specific disclosures
+>
+> **Web**: Landing page, meta tags, OG images, sitemap, analytics
+>
+> **API**: Documentation, versioning, status page, rate limit docs
+
 | # | Check | How to Verify |
 |---|-------|---------------|
-| 28 | App name includes primary keyword | Ask Product Owner |
-| 29 | Subtitle uses secondary keywords | Ask Product Owner |
-| 30 | Screenshots taken on real device | Ask Product Owner |
-| 31 | "What's New" text prepared | Ask Product Owner |
-| 32 | App icon at 1024x1024 | Check assets |
-| 33 | Bundle version incremented | Check app.json |
-| 34 | Minimum iOS version correct | Check app.json |
+| 27 | Public listing / landing page complete | Ask Product Owner |
+| 28 | Screenshots or demo materials ready | Ask Product Owner |
+| 29 | Description / marketing copy finalized | Ask Product Owner |
+| 30 | Version number incremented | Check config files |
 
 #### Business Readiness
 | # | Check | How to Verify |
 |---|-------|---------------|
-| 35 | Revenue model decided | Check DECISIONS.md |
-| 36 | Pricing set (if monetizing at launch) | Check DECISIONS.md |
-| 37 | IAP configured (if subscription) | Check App Store Connect |
-| 38 | Unit economics estimated | Check DECISIONS.md or cost analysis |
-| 39 | Kill criteria defined | Check MVP brief or DECISIONS.md |
-| 40 | Success metric defined | Check MVP brief or DECISIONS.md |
+| 31 | Revenue model decided | Check DECISIONS.md |
+| 32 | Pricing set (if monetizing at launch) | Check DECISIONS.md |
+| 33 | Payment infrastructure configured (if applicable) | Check payment provider setup |
+| 34 | Unit economics estimated | Check DECISIONS.md or cost analysis |
+| 35 | Kill criteria defined | Check MVP brief or DECISIONS.md |
+| 36 | Success metric defined | Check MVP brief or DECISIONS.md |
 
 #### User Testing
 | # | Check | How to Verify |
 |---|-------|---------------|
-| 41 | Self-testing on real device completed | Ask Product Owner |
-| 42 | Inner circle testing (3-5 people) completed | Ask Product Owner |
-| 43 | Beta testing (10-30 users) completed | Ask Product Owner |
-| 44 | Critical feedback addressed | Cross-reference feedback with BACKLOG.md |
+| 37 | Self-testing on real device/environment completed | Ask Product Owner |
+| 38 | Inner circle testing (3-5 people) completed | Ask Product Owner |
+| 39 | Beta testing (10-30 users) completed | Ask Product Owner |
+| 40 | Critical feedback addressed | Cross-reference feedback with BACKLOG.md |
 
 #### Infrastructure
 | # | Check | How to Verify |
 |---|-------|---------------|
-| 45 | Analytics/crash reporting configured | Check for Sentry or equivalent |
-| 46 | EAS Build profile configured for production | Check eas.json |
-| 47 | Support channel set up (email minimum) | Ask Product Owner |
-| 48 | Rollback plan defined | Check release docs or DECISIONS.md |
+| 41 | Analytics/crash reporting configured | Check for monitoring integration |
+| 42 | Production build/deploy pipeline configured | Check CI/CD config |
+| 43 | Support channel set up (email minimum) | Ask Product Owner |
+| 44 | Rollback plan defined | Check release docs or DECISIONS.md |
 
-### OTA Update Readiness
+### Hotfix Readiness
 
 | # | Check | How to Verify |
 |---|-------|---------------|
-| 1 | Changes are JS-only (no native module changes) | Review diff for native code |
-| 2 | No new permissions required | Check app.json plugins |
-| 3 | All tests pass | Run `npm test` |
-| 4 | ESLint + TypeScript pass | Run lint + typecheck |
-| 5 | Change tested on real device | Ask Product Owner |
-| 6 | Previous update available for rollback | Check EAS Update dashboard |
+| 1 | Changes are minimal and targeted | Review diff scope |
+| 2 | No new dependencies or permissions introduced | Review dependency/config changes |
+| 3 | All tests pass | Run test suite |
+| 4 | Linter + type checker pass | Run lint + typecheck |
+| 5 | Change tested in staging/preview | Ask Product Owner |
+| 6 | Previous version available for rollback | Check deployment history |
 | 7 | Change is low-risk | Manual assessment of diff scope |
 
 ---
@@ -131,7 +135,7 @@ Read the codebase, BACKLOG.md, DECISIONS.md, and PROJECT_STATE.md. Check each it
 ║              LAUNCH READINESS AUDIT                      ║
 ╠══════════════════════════════════════════════════════════╣
 
-TARGET: [TestFlight / App Store / OTA Update]
+TARGET: [Beta / Production / Hotfix]
 DATE:   [today's date]
 
 ━━━ PASSED ━━━
