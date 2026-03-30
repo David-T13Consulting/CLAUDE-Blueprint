@@ -26,7 +26,18 @@ cd my-new-project
 | `BACKLOG.md` | Add your initial work items |
 | `DECISIONS.md` | Will be populated as you make decisions |
 
-## Step 3: Review Platform-Specific Sections
+## Step 3: Start Building
+
+Once App Config is filled in, tell Claude "let's build" or "set up the project." It will **automatically scaffold** all config files for your tech stack:
+
+- `package.json`, `tsconfig.json`, linter, formatter, test config
+- Styling config wired to your DESIGN_SYSTEM.md tokens
+- CI/CD workflow (`.github/workflows/ci.yml`)
+- Git hooks, `.gitignore`, `.env.example`
+
+You don't need to create these manually — Claude generates them based on your App Config.
+
+## Step 4: Review Platform-Specific Sections
 
 Several sections in `CLAUDE.md` are marked with `> **TEMPLATE**:` notes. These cover:
 

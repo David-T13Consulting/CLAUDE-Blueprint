@@ -919,6 +919,36 @@ User Input → [hook] → [service] → [API / DB]
                     Return → Display in UI
 ```
 
+### Project Scaffolding — Auto-Generate on First Build
+
+When the user starts a new project from this blueprint and says "let's build" or "set up the project", **automatically create all necessary config files** based on the App Config above. Do not ask — just generate them.
+
+#### Always create (adapt to the chosen tech stack):
+
+| Category | Files to Generate |
+|----------|------------------|
+| **Package manager** | `package.json` (with scripts: dev, build, lint, format, test, typecheck) |
+| **TypeScript** | `tsconfig.json` (strict mode enabled) |
+| **Linter** | ESLint config (e.g., `eslint.config.mjs`) with rules matching the Standards section |
+| **Formatter** | Prettier config (`.prettierrc`) |
+| **Styling** | Framework config (e.g., `tailwind.config.js` wired to DESIGN_SYSTEM.md tokens, `global.css`) |
+| **Transpiler** | If needed (e.g., `babel.config.js` for React Native, `vite.config.ts` for Vite) |
+| **Testing** | Test config (e.g., `jest.config.js`, `vitest.config.ts`) |
+| **Git hooks** | Pre-commit hook (e.g., Husky + lint-staged) to run lint + typecheck before commits |
+| **CI/CD** | `.github/workflows/ci.yml` — lint, typecheck, test on push/PR |
+| **Git** | `.gitignore` tailored to the tech stack |
+| **Environment** | `.env.example` with placeholder keys (never commit actual `.env`) |
+
+#### Rules for scaffolding:
+
+1. **Match the App Config exactly.** If Framework says "Next.js", don't generate Expo configs.
+2. **Wire design tokens.** If DESIGN_SYSTEM.md has colors/spacing, wire them into the styling config (e.g., Tailwind `theme.extend`).
+3. **CI must run all checks.** The CI workflow must run every command listed in the Commands section.
+4. **Pin dependencies.** Use exact versions in `package.json`, not ranges.
+5. **Minimal dependencies.** Only install what's needed for the declared tech stack. Every dependency must be justified.
+6. **Install and verify.** After generating, run `npm install` (or equivalent) and verify the project builds/lints/tests clean.
+7. **Don't scaffold twice.** If config files already exist, respect them — don't overwrite.
+
 ---
 
 ## Standards & Best Practices
