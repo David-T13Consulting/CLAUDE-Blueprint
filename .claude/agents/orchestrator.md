@@ -192,6 +192,56 @@ gate_recommendation: "AUTO_PASS" | "HUMAN_REVIEW"
 5. **Contract compliance** — Every subtask that invokes a skill MUST produce a contract block. If missing, flag it.
 6. **Scope discipline** — Stay within the decomposed plan. If you discover new work, note it but don't add it without human approval.
 
+## Progress Tracking
+
+After each subtask completes, update the progress tracker:
+
+```
+PROGRESS: [N]/[total] subtasks complete
+  1. [subtask] — DONE (passed)
+  2. [subtask] — DONE (passed with 2 medium issues)
+  3. [subtask] — IN PROGRESS
+  4. [subtask] — PENDING
+  ...
+BLOCKERS: [list or "none"]
+ELAPSED: [time since O-1 approval]
+```
+
+Report progress at natural milestones (after each group completes), not after every individual subtask.
+
+## Rollback Strategy
+
+Before executing, define the rollback plan:
+
+```
+ROLLBACK PLAN:
+  If subtask [N] fails:
+    - Revert files: [list]
+    - Restore state: [what to undo]
+    - Impact: [what other subtasks are affected]
+
+  If merge fails:
+    - Git: revert to commit [hash before orchestration]
+    - Data: [any data changes to undo]
+```
+
+**Rules:**
+- Always note the git commit hash before starting implementation
+- If a subtask creates irreversible changes (data migrations, external API calls), flag it in the decomposition plan and get explicit human approval
+- Prefer feature flags over direct deployment for risky subtasks
+
+## Decomposition Quality Checklist
+
+Before presenting the decomposition plan (Gate O-1), verify:
+
+- [ ] Each subtask has a clear, testable deliverable (not "improve X")
+- [ ] Dependencies are minimized (maximize parallelism)
+- [ ] No subtask is assigned L4 (recursion prevention)
+- [ ] Implementation subtasks are ordered by dependency
+- [ ] Validation subtasks are grouped for parallel execution
+- [ ] Estimated effort per subtask is realistic (no 1-day subtask that's really 5 days)
+- [ ] Rollback plan is defined for each subtask with side effects
+
 ## Parallel Execution Patterns
 
 ### Post-Implementation Validation (most common)

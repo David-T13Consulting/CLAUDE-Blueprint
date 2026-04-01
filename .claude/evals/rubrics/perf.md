@@ -1,22 +1,35 @@
 # Eval Rubric: Performance Output
 
 > Scores `/perf` outputs against quality dimensions.
+> Version: 2.0
 
 ## Dimensions
 
-### 1. Render Analysis Depth (weight: 2.0)
+### 1. Profiling Rigor (weight: 2.0)
 
-Are re-renders, animation performance, and virtualization actually analyzed?
+Are specific profiling tools used and named, with quantitative measurements?
 
 | Score | Anchor |
 |-------|--------|
-| 1 | Not analyzed |
-| 2 | "Seems fine" — no specific analysis |
-| 3 | Key components checked for unnecessary re-renders |
-| 4 | Re-renders traced with specific culprits identified |
-| 5 | Full render audit with fix suggestions and before/after comparison |
+| 1 | No profiling tools mentioned |
+| 2 | Vague analysis ("seems fast") without tools or measurements |
+| 3 | Profiling tools named (React DevTools, Hermes, Flipper, Lighthouse) with component-level analysis |
+| 4 | Tools used with specific measurements: re-render counts, frame timing, component render duration |
+| 5 | Full profiling with before/after measurements, flame graphs referenced, and optimization recommendations per bottleneck |
 
-### 2. Memory Analysis (weight: 1.5)
+### 2. Performance Budgets (weight: 2.0)
+
+Are quantitative performance budgets defined and checked?
+
+| Score | Anchor |
+|-------|--------|
+| 1 | No performance budgets |
+| 2 | Vague goals ("should be fast") |
+| 3 | Key budgets defined: JS bundle <200KB, TTI <3s, 60fps target, API p95 <2s |
+| 4 | All budgets checked with pass/fail: bundle, TTI, FCP, LCP, CLS, INP, frame rate, memory, API latency, cold start |
+| 5 | Budgets with actual measurements, trend comparison, and platform-specific targets (Core Web Vitals) |
+
+### 3. Memory Analysis (weight: 1.5)
 
 Are memory bounds, cleanup, and leak potential genuinely evaluated?
 
@@ -24,49 +37,58 @@ Are memory bounds, cleanup, and leak potential genuinely evaluated?
 |-------|--------|
 | 1 | Not mentioned |
 | 2 | "No leaks found" — no evidence shown |
-| 3 | Bounded structures and cleanup on unmount verified |
-| 4 | Specific leak risks identified with affected components |
-| 5 | Memory growth patterns analyzed with worst-case scenarios |
+| 3 | Bounded structures verified, cleanup on unmount checked, memory growth estimated |
+| 4 | Specific leak risks identified per pattern (timers, subscriptions, closures), with prevention strategy |
+| 5 | Memory growth profile measured (initial → 30min), LRU eviction verified, worst-case scenarios modeled |
 
-### 3. Network Efficiency (weight: 1.5)
+### 4. Network Efficiency (weight: 1.5)
 
-Are redundant calls, caching, and timeout handling verified?
+Are redundant calls, caching, retry logic, and timeout handling verified?
 
 | Score | Anchor |
 |-------|--------|
 | 1 | Not analyzed |
 | 2 | Basic check on API call existence |
-| 3 | Duplicate detection and caching strategy reviewed |
-| 4 | Full network profile with optimization recommendations |
-| 5 | Network strategy with offline handling and cost optimization |
+| 3 | Duplicate detection, caching strategy per data type, and timeout verified |
+| 4 | Full network audit: dedup, caching with TTL, exponential backoff retry, waterfall vs parallel analysis |
+| 5 | Network optimization with offline handling, request prioritization, and bandwidth estimation |
 
-### 4. Cost Analysis (weight: 2.0)
+### 5. Cost Analysis (weight: 2.0)
 
-For AI features: are token costs calculated with optimization opportunities?
+For AI features: are token costs calculated with model tiering and optimization plan?
 
 | Score | Anchor |
 |-------|--------|
 | 1 | Not analyzed (for AI features) or N/A correctly noted |
 | 2 | "Costs seem reasonable" — no numbers |
-| 3 | Tokens per interaction estimated |
-| 4 | Cost per user per day/month calculated with assumptions stated |
-| 5 | Full unit economics with optimization plan and model tiering strategy |
+| 3 | Tokens per interaction estimated, cost per user per day/month calculated |
+| 4 | Full cost template: input/output tokens, cost per interaction, per user per day/month, margin vs revenue |
+| 5 | Cost analysis with model tiering strategy (Haiku/Sonnet/Opus), context window management, caching opportunities, and sensitivity analysis |
 
-### 5. Bundle Impact (weight: 1.0)
+*Note: For non-AI apps, score this dimension as N/A (excluded from calculation).*
 
-Is the feature's size impact quantified and justified?
+### 6. Bundle & Startup Impact (weight: 1.0)
+
+Is the feature's size and startup impact quantified and optimized?
 
 | Score | Anchor |
 |-------|--------|
 | 1 | Not mentioned |
 | 2 | "Added some dependencies" |
-| 3 | New deps listed with sizes |
-| 4 | Bundle impact quantified with justification per dependency |
-| 5 | Bundle analysis with lighter alternatives considered |
+| 3 | New deps listed with gzipped sizes, bundle impact quantified |
+| 4 | Bundle analysis with lighter alternatives considered, tree-shaking verified, lazy loading applied |
+| 5 | Full bundle audit: composition analysis (Expo Atlas/webpack), startup path impact, code splitting, deferred initialization |
 
 ## Grading
 
+For AI apps (6 dimensions):
 ```
-Max possible = 5 * (2+1.5+1.5+2+1) = 40
+Max possible = 5 * (2+2+1.5+1.5+2+1) = 50
+>= 80%: STRONG | 60-79%: ADEQUATE | 40-59%: WEAK | < 40%: FAIL
+```
+
+For non-AI apps (5 dimensions, cost excluded):
+```
+Max possible = 5 * (2+2+1.5+1.5+1) = 40
 >= 80%: STRONG | 60-79%: ADEQUATE | 40-59%: WEAK | < 40%: FAIL
 ```

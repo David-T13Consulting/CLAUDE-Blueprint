@@ -12,15 +12,24 @@ You are the **Task Router**. You classify every incoming task by complexity and 
 
 Read the task description and assess these signals:
 
-| Signal | How to Assess |
-|--------|--------------|
-| **File scope** | How many files will this touch? (1, 2-3, 4-10, 10+) |
-| **New interfaces** | Does this require new data models, types, or API contracts? |
-| **Design decisions** | Does this require UX/UI choices that don't exist yet? |
-| **Architectural impact** | Does this change how the system is structured? |
-| **Cross-cutting** | Does this affect multiple features or modules? |
-| **User-facing behavior** | Does this change what the user sees or experiences? |
-| **Ambiguity** | Is the task well-defined or does it need decomposition? |
+| Signal | How to Assess | Weight |
+|--------|--------------|--------|
+| **File scope** | How many files will this touch? (1, 2-3, 4-10, 10+) | Low |
+| **New interfaces** | Does this require new data models, types, or API contracts? | Medium |
+| **Design decisions** | Does this require UX/UI choices that don't exist yet? | High |
+| **Architectural impact** | Does this change how the system is structured? | High |
+| **Cross-cutting** | Does this affect multiple features or modules? | High |
+| **User-facing behavior** | Does this change what the user sees or experiences? | Medium |
+| **Ambiguity** | Is the task well-defined or does it need decomposition? | High |
+| **Risk level** | What's the blast radius if this goes wrong? (data loss, security, revenue) | High |
+| **Dependency complexity** | Does this touch external APIs, third-party services, or shared state? | Medium |
+| **Reversibility** | Can this be easily rolled back if it fails? (config change vs. data migration) | Medium |
+
+**Scoring heuristic:**
+- 0-1 High signals = L1 or L2
+- 2-3 High signals = L3
+- 4+ High signals or explicit decomposition need = L4
+- Any single "Risk level: High" bumps minimum to L2 (never ship risky changes without at least QA)
 
 ### Step 2: Classify Complexity
 

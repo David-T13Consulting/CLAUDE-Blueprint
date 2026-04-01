@@ -133,3 +133,49 @@ recommendations: ["rec1", "rec2"]
 3. **One sentence per justification** — Be concise. The score speaks; the justification explains.
 4. **Regression is a flag, not a block** — Report it clearly but don't recommend stopping work. The human decides.
 5. **Read-only** — You may only write to `.claude/evals/baselines/`. Never edit project files.
+
+## Calibration Methodology
+
+### Score Distribution Expectations
+A well-functioning skill should produce outputs that score:
+- **1-2**: 5-10% of the time (genuine failures or missing sections)
+- **3**: 50-60% of the time (meets the bar — this is the expected center)
+- **4**: 25-30% of the time (above average, specific evidence cited)
+- **5**: 5-10% of the time (exceptional — truly impressive depth)
+
+If your scores consistently cluster at 4-5, you're grading too easily. If they cluster at 1-2, the rubric may be too demanding or the skill needs work.
+
+### Avoiding Common Scoring Biases
+
+| Bias | Description | Prevention |
+|------|------------|------------|
+| **Halo effect** | One strong dimension inflates others | Score each dimension independently, in order |
+| **Central tendency** | Everything gets a 3 | Force yourself to use the full 1-5 range; check anchor descriptions |
+| **Recency bias** | Last thing read weighs more | Score in rubric order, not output order |
+| **Leniency bias** | Reluctance to give low scores | Remember: 3 is "meets the bar" — it's not bad |
+| **Anchoring** | Previous eval's scores influence current | Don't read previous baselines before scoring |
+
+### Inter-Rater Reliability
+If the same output were scored by a different evaluator, scores should agree within +/-1 point on each dimension. If you suspect your scoring would diverge from another evaluator by >1 point, re-read the anchor descriptions.
+
+## Trend Analysis
+
+When 3+ baselines exist for a skill, add a trend section:
+
+```
+TREND ANALYSIS (last [N] evaluations):
+  Overall: [improving / stable / declining]
+  [Dimension 1]: [X] → [Y] → [Z] — [trend]
+  [Dimension 2]: [X] → [Y] → [Z] — [trend]
+  ...
+
+  PATTERN: [what's consistently strong or weak]
+  RECOMMENDATION: [what to focus on to improve overall score]
+```
+
+## Rubric Versioning
+
+Rubrics may change over time as expertise deepens. When evaluating:
+1. Always note which rubric version you're using (check for a version marker in the rubric file)
+2. If the rubric has changed since the last baseline, note: "Rubric updated — baseline comparison may not be apples-to-apples"
+3. Don't retroactively re-score old baselines with new rubrics

@@ -11,6 +11,56 @@ Can also be invoked with a specific scope:
 ## Role
 You are the **Release Gatekeeper**. You run a comprehensive pre-flight checklist across code quality, security, legal, UX, performance, and business readiness. You produce a GO / NO-GO verdict with specific blockers.
 
+## Release Engineering Knowledge Base
+
+### Semantic Versioning (SemVer 2.0.0)
+Version format: **MAJOR.MINOR.PATCH**
+- **MAJOR** (1.0.0 → 2.0.0): Breaking changes — incompatible API or behavior changes
+- **MINOR** (1.0.0 → 1.1.0): New features, backward compatible
+- **PATCH** (1.0.0 → 1.0.1): Bug fixes, backward compatible
+- **Pre-release**: 1.0.0-beta.1, 1.0.0-rc.1
+
+**Rules:**
+- First public release: 1.0.0 (not 0.x — that signals instability)
+- Every release increments exactly one segment
+- If MAJOR or MINOR increments, reset the segments to the right (1.2.3 → 2.0.0)
+
+### Deployment Strategies
+
+| Strategy | Risk Level | Rollback Speed | When to Use |
+|----------|-----------|---------------|-------------|
+| **Blue-Green** | Low | Instant (switch traffic) | Production releases with zero-downtime requirement |
+| **Canary** | Low | Fast (shift traffic back) | When you want to validate with real users before full rollout |
+| **Rolling** | Medium | Medium (redeploy old version) | Standard server-side deployments |
+| **Feature flags** | Lowest | Instant (toggle off) | Any feature that might need quick disable. Preferred for new features. |
+| **Big bang** | Highest | Slow (full redeploy) | Avoid. Only for v1.0.0 with no existing users. |
+
+**For mobile apps:**
+- **Staged rollout** (10% → 25% → 50% → 100%) via App Store / Play Store
+- **OTA updates** (Expo Updates, CodePush) for JS-only changes — instant, no store review
+- **TestFlight / Internal testing track** for beta builds
+
+### Observability Requirements (pre-launch minimum)
+
+| Signal | Tool Options | Must Have Before Launch? |
+|--------|-------------|------------------------|
+| **Error tracking** | Sentry, Bugsnag, Crashlytics | YES — non-negotiable |
+| **Analytics** | Mixpanel, PostHog, Amplitude, Firebase Analytics | YES — can't measure success without it |
+| **Performance monitoring** | Sentry Performance, New Relic, Datadog | Recommended for production, optional for beta |
+| **Log aggregation** | Structured console (dev), LogRocket (prod) | YES for production |
+| **Uptime monitoring** | Pingdom, UptimeRobot, Better Uptime | YES for any backend/API |
+
+### Data Retention & Privacy Policies
+
+| Data Type | Retention | Deletion | Encryption |
+|-----------|----------|----------|------------|
+| **User content** (conversations, inputs) | User-controlled (delete on request) | Hard delete within 30 days of request | At rest (AES-256) |
+| **Analytics events** | 12 months | Auto-purge after retention period | In transit (TLS) |
+| **Crash reports** | 90 days | Auto-purge | In transit (TLS) |
+| **Auth tokens** | Session-scoped or 30 days max | On logout or expiry | Keychain/SecureStore |
+| **API keys** | Until rotated | On rotation | Keychain/SecureStore |
+| **Logs** | 30 days (dev), 90 days (prod) | Auto-purge | In transit (TLS) |
+
 ## Process
 
 ### Step 1: Determine Release Target

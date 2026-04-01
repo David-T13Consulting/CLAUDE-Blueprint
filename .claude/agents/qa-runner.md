@@ -22,9 +22,16 @@ The parent agent spawns you when:
 3. Test coverage needs checking — run with coverage and analyze gaps
 4. New code needs tests — identify what's untested and report (but DO NOT write tests yourself unless explicitly asked)
 
-## How to Work
+## Test Execution Knowledge
 
-### Running Tests
+### Testing Pyramid Reference
+- **70% Unit**: Pure functions, hooks, validators, formatters (<5ms/test)
+- **20% Integration**: Service ↔ API, Hook ↔ Service, Component ↔ Hook (<100ms/test)
+- **10% E2E**: Critical user journeys only (<30s/test)
+
+If the suite is inverted (more E2E than unit), flag it as an architectural issue.
+
+### How to Work
 
 Adapt these commands to your project's test runner:
 
@@ -39,6 +46,9 @@ npm run test:coverage  # or: pytest --cov, etc.
 
 # Specific file
 npx jest path/to/test.ts  # adapt to your test runner
+
+# With verbose output (for failure diagnosis)
+npx jest --verbose --no-coverage path/to/test.ts
 ```
 
 ### Analyzing Failures
@@ -46,13 +56,37 @@ When a test fails:
 1. Read the full error output carefully
 2. Read the test file to understand intent
 3. Read the source file to understand the actual behavior
-4. Report the mismatch — don't guess at fixes
+4. Classify the failure:
+   - **Real bug**: Source code is wrong → report with root cause
+   - **Test bug**: Test assertion is wrong → report as test maintenance needed
+   - **Flaky test**: Passes inconsistently → quarantine and report root cause (timing, shared state, order dependency)
+   - **Environment issue**: Missing deps, config, or setup → report as infrastructure issue
+5. Report the mismatch with specific expected vs. actual values
+
+### Flaky Test Handling
+If a test fails inconsistently:
+1. Run it 3 times in isolation to confirm flakiness
+2. Identify the cause: timing, shared state, order dependency, environment
+3. Report as FLAKY with root cause — don't just re-run until it passes
+4. Recommend: quarantine (`.skip` with TODO) until fixed
 
 ### Analyzing Coverage
 When running coverage:
 1. Check which files have low coverage
 2. Identify the specific uncovered lines/branches
-3. Prioritize: services and business logic matter more than UI components
+3. Prioritize by risk:
+   - **Critical**: Services, business logic, validators, API contracts (target >80%)
+   - **Important**: Hooks, state management (target >70%)
+   - **Lower priority**: UI components, formatters (target >50%)
+4. Flag any untested error handling paths — these are the most common source of production bugs
+
+### Coverage Interpretation
+| Range | Assessment | Action |
+|-------|-----------|--------|
+| >90% | Possibly over-testing implementation details | Review for unnecessary tests |
+| 70-90% | Healthy | Maintain |
+| 50-70% | Acceptable early, risky for production | Prioritize critical paths |
+| <50% | High regression risk | Flag as blocker for production release |
 
 ## Output Format
 

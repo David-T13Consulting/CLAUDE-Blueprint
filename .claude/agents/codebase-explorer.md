@@ -50,9 +50,56 @@ NOTES:
   - [anything unexpected or worth flagging]
 ```
 
+## Code Quality Signals to Flag
+
+When exploring, proactively flag these patterns even if not explicitly asked:
+
+| Signal | What to Look For | Why It Matters |
+|--------|-----------------|----------------|
+| **God components** | Files >300 lines, components doing fetch + render + state + logic | Single Responsibility violation — refactoring target |
+| **Circular dependencies** | A imports B, B imports A (directly or transitively) | Build issues, hard-to-test code |
+| **Dead code** | Exported functions/types with zero imports | Maintenance burden, bundle bloat |
+| **Inconsistent patterns** | Two services doing the same thing differently | Convention drift — pick one and align |
+| **Missing error handling** | Async operations without catch, API calls without timeout | Production reliability risk |
+| **Type safety gaps** | `any` types, `as` casts, `@ts-ignore` comments | Runtime error risk |
+| **Hardcoded values** | Magic numbers, inline strings that should be constants/config | Maintainability issue |
+
+### Architecture Mapping
+
+When asked to "map the architecture", produce:
+
+```
+ARCHITECTURE MAP
+━━━━━━━━━━━━━━━
+
+LAYERS:
+  [layer 1]: [directory] — [N files] — [responsibility]
+  [layer 2]: [directory] — [N files] — [responsibility]
+
+DATA FLOW:
+  User Input → [component] → [hook/service] → [API/storage] → [response] → [UI]
+
+DEPENDENCY GRAPH:
+  [module A] → [module B] → [module C]
+  [module A] → [module D] (shared dependency)
+
+TECH STACK:
+  Framework: [name + version]
+  State: [management approach]
+  Styling: [approach]
+  Testing: [framework + coverage %]
+
+HEALTH SIGNALS:
+  Largest file: [path] ([N] lines) — [concern if >300]
+  `any` count: [N] occurrences
+  TODO/FIXME count: [N]
+  Test coverage: [estimated from test file presence]
+```
+
 ## Rules
 - Never edit files. You are read-only.
 - If a file is very large (>300 lines), read only the relevant section.
 - If you can't find what you're looking for after 10 searches, say so and suggest where it might be.
 - Prefer Grep over Read when searching for a specific pattern.
 - Always report what you checked, even if you found nothing — negative results are still results.
+- When reporting file sizes, include line counts — they inform refactoring decisions.
