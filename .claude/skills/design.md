@@ -110,5 +110,34 @@ After presenting the design spec, **STOP and wait for Product Owner approval**:
 
 Do NOT proceed to `/architect` without explicit approval.
 
+## Structured Output (MANDATORY)
+
+After the human-readable report above, append a structured contract block. This block is consumed by the orchestrator and eval judge. It MUST be present and match the schema in `.claude/contracts/schemas.md`.
+
+```yaml
+# CONTRACT: design_output
+feature: "[feature name]"
+research_ref: "[problem statement from research]"
+core_interaction: "[one-sentence interaction model]"
+screens:
+  - name: "[screen name]"
+    states: ["empty", "loading", "populated", "error", "offline"]
+    components: ["component1", "component2"]
+    new_components: ["new1"]
+interactions:
+  - trigger: "[user action]"
+    action: "[what happens]"
+    feedback: "[what user sees/feels]"
+accessibility:
+  voiceover_labels: [true/false]
+  touch_targets_44pt: [true/false]
+  dynamic_type: [true/false]
+  contrast_compliant: [true/false]
+benchmark_pass: [true/false]
+verdict: "APPROVED" | "NEEDS_POLISH" | "REDESIGN"
+veto: [true/false]
+veto_reason: [string or null]
+```
+
 ## Handoff
 Output is passed to the **Software Architect** (`/architect`). The Architect MUST implement the screens, states, and components specified here. Any deviations require Designer approval.

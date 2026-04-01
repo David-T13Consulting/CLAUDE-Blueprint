@@ -69,10 +69,22 @@ CLAUDE-Blueprint/
   .gitignore             ← Standard ignores
   .claude/
     agents/
-      codebase-explorer.md  ← Fast read-only codebase mapping
+      codebase-explorer.md  ← Fast read-only codebase mapping (Haiku)
+      eval-judge.md          ← LLM-as-judge quality scoring (read-only)
+      orchestrator.md        ← L4 task decomposition and coordination
       qa-runner.md           ← Test execution and analysis
       security-reviewer.md   ← Security audit (read-only)
+    contracts/
+      schemas.md           ← Structured I/O contracts between agents
+    evals/
+      README.md            ← Eval framework documentation
+      rubrics/             ← Scoring rubrics (one per skill)
+        research.md, design.md, architect.md, qa.md,
+        security.md, validate.md, perf.md, route.md
+      baselines/           ← Auto-generated eval baselines (per-project)
+        README.md
     skills/
+      route.md         ← Task complexity classification (L1-L4)
       architect.md     ← Architecture decisions
       checkpoint.md    ← Decision checkpoints
       design.md        ← UI/UX design
@@ -81,5 +93,23 @@ CLAUDE-Blueprint/
       readiness.md     ← Launch readiness checks
       research.md      ← Problem research
       security.md      ← Security review
-      validate.md      ← Validation gates
+      validate.md      ← UX validation
 ```
+
+## Level 4 Agentic Architecture
+
+The blueprint supports four levels of task complexity, scaling automatically:
+
+| Level | What Happens | Gates | Evals |
+|-------|-------------|-------|-------|
+| **L1 Trivial** | Direct action (fix typo, rename) | None | None |
+| **L2 Standard** | Engineer + targeted validators | Gate 4 only | On request |
+| **L3 Complex** | Full 8-agent pipeline | All 4 gates | Automatic |
+| **L4 Orchestrated** | Orchestrator decomposes, parallel agents, merge | O-1 + O-2 | Every subtask |
+
+Key L4 components:
+- **`.claude/agents/orchestrator.md`** — Decomposes tasks, coordinates subagents, merges results
+- **`.claude/agents/eval-judge.md`** — Scores outputs against rubrics for quality at scale
+- **`.claude/contracts/schemas.md`** — Machine-parseable I/O contracts between agents
+- **`.claude/evals/rubrics/`** — Per-skill scoring rubrics with weighted dimensions
+- **`.claude/skills/route.md`** — Classifies tasks by complexity before work begins

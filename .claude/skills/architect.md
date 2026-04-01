@@ -112,5 +112,49 @@ After presenting the architecture plan, **STOP and wait for Product Owner approv
 
 Do NOT proceed to implementation without explicit approval.
 
+## Structured Output (MANDATORY)
+
+After the human-readable report above, append a structured contract block. This block is consumed by the orchestrator and eval judge. It MUST be present and match the schema in `.claude/contracts/schemas.md`.
+
+```yaml
+# CONTRACT: architecture_output
+feature: "[feature name]"
+design_ref: "[design spec reference]"
+data_model:
+  - name: "[TypeName]"
+    fields:
+      - name: "[fieldName]"
+        type: "[string/number/boolean/etc]"
+        required: [true/false]
+services:
+  new:
+    - name: "[serviceName]"
+      purpose: "[what it does]"
+      inputs: ["input1"]
+      outputs: ["output1"]
+  modified:
+    - name: "[existingService]"
+      change: "[what changes]"
+state_management:
+  local: ["component-level state"]
+  shared: ["app-wide state"]
+  persisted: ["stored state"]
+file_plan:
+  create:
+    - path: "[file path]"
+      purpose: "[why]"
+  modify:
+    - path: "[file path]"
+      change: "[what changes]"
+implementation_order: ["step 1", "step 2"]
+risks:
+  - risk: "[what could go wrong]"
+    severity: "high" | "medium" | "low"
+    mitigation: "[how to prevent]"
+verdict: "APPROVED" | "PHASED_APPROACH" | "REDESIGN"
+veto: [true/false]
+veto_reason: [string or null]
+```
+
 ## Handoff
 Output is passed to the **Engineer** (`/engineer` or direct implementation). The Engineer MUST follow the file plan, data model, and implementation order. Deviations require Architect approval.

@@ -173,32 +173,73 @@ KILL CRITERIA:
   e.g., "If <10% activation after 2 weeks, pivot or kill"
 ```
 
-### Pipeline Modes
+### Pipeline Modes (Project Lifecycle)
 
-Not every task deserves the full 8-agent pipeline. Match intensity to certainty:
+Pipeline modes describe **where the project is**, not how complex a task is:
 
 #### EXPLORE Mode — Validate fast, learn fast
 **When**: Unvalidated idea, new concept, "would this even work?"
-**Agents**: Designer → Engineer
 **Standards**: Working code, but throwaway. No tests, no full security audit.
 **Timebox**: 1-3 days max
-**Output**: A prototype you can put in front of users or yourself
-**Rule**: Code written in Explore mode is **never promoted to production**. If validated, rebuild in Build mode.
+**Rule**: Code written in Explore mode is **never promoted to production**. If validated, rebuild in Build mode. L4 orchestration is not available in EXPLORE.
 
 #### BUILD Mode — Production-grade for validated features
 **When**: Problem is validated, MVP is scoped, we're committed
-**Agents**: All 8, in full sequence
 **Standards**: Everything in this document applies
 **Timebox**: Defined in MVP brief
-**Output**: Shippable, tested, secure code
 **Rule**: This is the default mode. When in doubt, use Build mode.
 
 #### SCALE Mode — Optimize what's already working
 **When**: Feature is live, users are engaged, growth is needed
-**Agents**: All 8 + cost optimization + infrastructure review
 **Standards**: Everything in Build mode + performance budgets + cost monitoring
 **Focus**: Speed, efficiency, cost per user, reliability at volume
 **Rule**: Only enter Scale mode with real usage data. Never pre-optimize.
+
+### Task Complexity Levels (Per-Task Router)
+
+> **Pipeline modes describe the project phase. Task complexity levels describe the task.** They are orthogonal. An L1 fix can happen in BUILD mode. An L3 feature can happen in EXPLORE mode (capped to Designer + Engineer).
+
+Every incoming task is classified **BEFORE** any work begins. The system announces the classification and proceeds accordingly. The user can override at any time.
+
+#### L1 — TRIVIAL (Direct action, no pipeline)
+**Signals**: Single-file change, well-defined scope, no design decisions, no new interfaces, no user-facing behavior change.
+**Examples**: Fix typo, rename variable, update dependency, add comment, fix lint error, answer a question.
+**Pipeline**: Engineer only. No agents. No gates. No reports. Just do it.
+**Eval**: Never.
+
+#### L2 — STANDARD (Targeted work with targeted checks)
+**Signals**: 1-3 file changes, clear requirements, existing patterns to follow, localized impact.
+**Examples**: Bug fix, small refactor, add validation, UI tweak, add a test.
+**Pipeline**: Engineer + relevant validator(s) only. Gate 4 only (lightweight: 2-3 line summary).
+**Eval**: On request only.
+
+#### L3 — COMPLEX (Full or near-full pipeline)
+**Signals**: New user-facing feature, multiple components, new data models, API integration, architectural decisions needed.
+**Examples**: New feature, major refactor, new screen, API integration, state management change.
+**Pipeline**: Full sequence — Research → Design → Architect → Engineer → QA → Security → Validate → Perf. All 4 human gates.
+**Eval**: Automatic after each skill completes.
+
+#### L4 — ORCHESTRATED (Self-decomposing, parallel execution)
+**Signals**: Epic-scale work, multiple independent features, system-wide change, 3+ independent subtasks.
+**Examples**: "Build the MVP", "Redesign the settings system", "Add offline support across the app".
+**Pipeline**: Orchestrator (`.claude/agents/orchestrator.md`) decomposes → parallel L2/L3 subtasks → orchestrator merges → human review.
+**Gates**: Human gate at decomposition plan (O-1) + human gate at final merge (O-2).
+**Eval**: Every subtask output is eval-scored.
+
+#### Classification Rules
+1. **When in doubt, go ONE level up** — over-process is cheaper than under-process
+2. **L1 is the default for trivial work** — don't spin up agents to rename a variable
+3. **If classification changes mid-task** (discovered more complexity), STOP and reclassify
+4. **The user always has final authority** — override with "just do it" (L1), "full pipeline" (L3), or "decompose this" (L4)
+5. **Announce the classification**: `[L2-STANDARD] Bug fix in auth service. Pipeline: Engineer → QA. Gates: Gate 4.`
+
+#### How Complexity Levels Interact with Pipeline Modes
+
+| Pipeline Mode | L1 | L2 | L3 | L4 |
+|--------------|-----|-----|-----|-----|
+| **EXPLORE** | As-is | As-is, skip security/perf | Designer + Engineer only | Not available |
+| **BUILD** | As-is | As-is | Full pipeline | Full orchestration |
+| **SCALE** | As-is | As-is + perf check | Full pipeline + cost analysis | Full orchestration + cost analysis |
 
 ### Success Metrics Framework
 
@@ -333,7 +374,23 @@ You are not one role. You are a **team of specialists** that activate at the rig
 
 **The user is the Product Owner.** They have final authority at every checkpoint. No agent overrides the Product Owner.
 
-### The Pipeline (with Approval Gates)
+### The Pipeline (Adaptive)
+
+The pipeline adapts to task complexity. Not every task gets the full sequence:
+
+```
+L1 (TRIVIAL):     Task → Engineer → Done (no gates)
+
+L2 (STANDARD):    Task → Engineer → Validator(s) → Gate 4 (lightweight) → Done
+
+L3 (COMPLEX):     Task → Full pipeline below → Done
+
+L4 (ORCHESTRATED): Task → Orchestrator decomposes → Gate O-1 →
+                   [Parallel subtask groups (L2/L3)] →
+                   Orchestrator merges → Gate O-2 → Done
+```
+
+**Full L3 Pipeline (detailed reference):**
 
 ```
 Problem Statement
@@ -344,7 +401,7 @@ Problem Statement
        ↓
 ╔═════════════════════╗
 ║ 🔒 GATE 1: PROCEED? ║  ← Product Owner approves research findings
-╚══════════╤══════════╝     "Is this the right problem? Go or no-go?"
+╚══════════╤══════════╝
            ↓
 ┌─────────────┐
 │   DESIGN    │  ← Define what to build and how it looks/feels
@@ -352,7 +409,7 @@ Problem Statement
        ↓
 ╔═════════════════════╗
 ║ 🔒 GATE 2: BUILD?   ║  ← Product Owner approves the design
-╚══════════╤══════════╝     "Is this what I want? Build it or redesign?"
+╚══════════╤══════════╝
            ↓
 ┌──────────────┐
 │ ARCHITECTURE │  ← Plan the system before writing code
@@ -360,31 +417,19 @@ Problem Statement
        ↓
 ╔══════════════════════╗
 ║ 🔒 GATE 3: APPROACH? ║  ← Product Owner approves the technical plan
-╚══════════╤═══════════╝     "Does this make sense? Any concerns?"
+╚══════════╤═══════════╝
            ↓
 ┌─────────────┐
 │ ENGINEERING │  ← Build it to production standards
 └──────┬──────┘
        ↓
-┌─────────────┐
-│     QA      │  ← Verify it works in every scenario
-└──────┬──────┘
-       ↓
-┌──────────────┐
-│   SECURITY   │  ← Audit for vulnerabilities
-└──────┬───────┘
-       ↓
-┌───────────────┐
-│ UX VALIDATION │  ← Confirm it's usable and delightful
-└──────┬────────┘
-       ↓
-┌─────────────┐
-│ PERFORMANCE │  ← Ensure it's fast and efficient
-└──────┬──────┘
-       ↓
+┌──────────────────────────────────────────┐
+│  QA  │  SECURITY  │  UX VALID  │  PERF  │  ← Run in parallel (all read-only)
+└──────────────────┬───────────────────────┘
+                   ↓
 ╔═════════════════════╗
-║ 🔒 GATE 4: SHIP?    ║  ← Product Owner final review
-╚══════════╤══════════╝     "I've reviewed. Ship it or fix [X] first."
+║ 🔒 GATE 4: SHIP?    ║  ← Product Owner final review (all 4 reports)
+╚══════════╤══════════╝
            ↓
         Ship it
 ```
@@ -400,12 +445,22 @@ At each gate, the system **STOPS** and presents a summary for the Product Owner 
 | **Gate 3: Approach?** | Architecture | Data model, services, file plan, risks | ✅ Go / 🔄 Adjust [X] / ❌ Different approach |
 | **Gate 4: Ship?** | QA + Security + UX + Perf | All agent reports, pass/fail verdicts | ✅ Ship / 🔄 Fix [X] first / ❌ Not ready |
 
+**Gate behavior varies by complexity level:**
+
+| Level | Gate 1 | Gate 2 | Gate 3 | Gate 4 |
+|-------|--------|--------|--------|--------|
+| **L1** | — | — | — | — |
+| **L2** | — | — | — | Human (lightweight: 2-3 line summary) |
+| **L3** | Human | Human | Human | Human (full reports) |
+| **L4** | Gate O-1 (decomposition plan) | Per subtask level | — | Gate O-2 (merge review) |
+
 **Rules:**
-- The system NEVER proceeds past a gate without explicit Product Owner approval
+- The system NEVER proceeds past an active gate without explicit Product Owner approval
 - "Looks good" or "Go" is sufficient approval — no ceremony needed
 - If the Product Owner says "Change X," the relevant agent re-runs with the feedback
 - If the Product Owner says "Kill it," work stops and the decision is logged in DECISIONS.md
 - In EXPLORE mode, only Gate 1 applies (lightweight validation before prototyping)
+- L1 tasks have NO gates — just do the work. L2 tasks have a single lightweight Gate 4.
 
 ### The Product Owner's Role
 
@@ -553,12 +608,7 @@ Checklist:
 
 ### How to Invoke the Team
 
-First, determine the **Pipeline Mode** (see Product Strategy):
-- **EXPLORE**: Designer → Engineer only. Ship fast, learn fast.
-- **BUILD**: All 8 agents in sequence. Production-grade.
-- **SCALE**: All 8 agents + cost optimization + infrastructure review.
-
-For scoped work within BUILD/SCALE mode, activate the relevant subset. For a bug fix: Engineer → QA → Security. For a UI tweak: Designer → Engineer → UX Validator.
+First, the system **classifies the task** by complexity level (L1-L4) and selects the appropriate pipeline automatically. The classification considers both the task complexity and the current pipeline mode (EXPLORE/BUILD/SCALE). See "Task Complexity Levels" and "Task Routing" for details.
 
 State which agent you're operating as:
 ```
@@ -578,6 +628,7 @@ Each agent is available as a structured skill with enforced inputs, process, and
 
 | Command | Agent | Input | Output |
 |---------|-------|-------|--------|
+| `/route [task]` | Task Router | Task description | Complexity classification (L1-L4) + pipeline plan |
 | `/research [problem]` | UX Researcher | Problem statement | Validation scorecard + user stories + recommendation |
 | `/design [feature]` | Product Designer | Feature name (requires research first) | Screen flows + states + component specs |
 | `/architect [feature]` | Software Architect | Feature name (requires design first) | Data model + services + file plan + implementation order |
@@ -591,6 +642,12 @@ Each agent is available as a structured skill with enforced inputs, process, and
 - Each skill produces a structured report (not freeform text).
 - Each skill has veto power. A BLOCK verdict means work goes back, not forward.
 - Skills are defined in `.claude/skills/` — read them for full process details.
+
+**Structured output requirement:**
+- Every skill report MUST include a structured YAML contract block at the end (`# CONTRACT:`)
+- Contract schemas are defined in `.claude/contracts/schemas.md`
+- The orchestrator and eval judge consume ONLY the structured block
+- The human-readable report above the block remains unchanged
 
 **Full pipeline invocation (new feature):**
 ```
@@ -639,6 +696,52 @@ When agents disagree (e.g., Designer wants a complex animation, Performance says
 2. **Present trade-offs** — what each option costs and gains
 3. **Default to the Product Owner** — present the trade-off and let them decide
 4. **Document the decision** — record why one path was chosen over another
+
+### Orchestrator — L4 Autonomous Coordination
+
+For L4 tasks, the system spawns an orchestrator subagent (`.claude/agents/orchestrator.md`) that:
+
+1. **Decomposes** the task into L2/L3 subtasks (never recursive L4)
+2. **Identifies** dependency graph and parallel groups
+3. **Presents** a DECOMPOSITION PLAN for human approval (Gate O-1)
+4. **Executes** subtasks — sequential for writes, parallel for reads
+5. **Collects** structured contract outputs from each subtask
+6. **Evaluates** each output via the eval judge
+7. **Merges** results and presents for final human review (Gate O-2)
+
+**Parallel execution rules:**
+- Post-implementation validators (QA, Security, UX Validation, Performance) always run in parallel — they're read-only
+- Implementation subtasks run sequentially — they write files
+- Research can parallelize competitor analysis across multiple codebase-explorer subagents
+- The orchestrator manages the full dependency graph
+
+**Hard constraints:**
+- L4 subtasks decompose into L2/L3 only — no L4 recursion
+- Two mandatory human gates (O-1 and O-2) — never skipped
+- Any BLOCK verdict from a subtask stops the merge
+- Scope changes require human approval
+
+### Quality Evals — Continuous Output Scoring
+
+Every skill output CAN be scored by the eval judge (`.claude/agents/eval-judge.md`) against rubrics (`.claude/evals/rubrics/`). Eval behavior varies by task complexity:
+
+| Level | Eval Behavior |
+|-------|--------------|
+| **L1** | Never — no overhead for trivial tasks |
+| **L2** | On request only — ask for it explicitly |
+| **L3** | Automatic — after each skill completes, before the next gate |
+| **L4** | Every subtask — orchestrator runs eval on all skill outputs |
+
+**How it works:**
+1. A skill produces its report + structured contract block
+2. The eval judge loads the matching rubric and scores each dimension (1-5)
+3. A weighted percentage is calculated and graded: STRONG (>=80%), ADEQUATE (60-79%), WEAK (40-59%), FAIL (<40%)
+4. The score is compared to the baseline — regressions (>10 point drop) are flagged
+5. Baselines are stored in `.claude/evals/baselines/` and accumulate over time
+
+**Eval does NOT block** — it scores. A WEAK or FAIL score is flagged to the human but does not automatically block the pipeline. The human decides whether to re-run the skill or proceed.
+
+**Regression detection:** If a score drops 10+ points from baseline, the system flags: *"Quality regression detected on [skill]. Previous: X%, Current: Y%. Recommend re-running."*
 
 ---
 
@@ -1353,18 +1456,29 @@ Before pushing any CI workflow, dependency file, or infrastructure config:
 11. Memory is bounded — no unbounded growth
 12. CI workflows validated locally before pushing (see above)
 
-### Agent Activation Guide
+### Task Routing (Replaces Static Agent Activation Guide)
 
-| Scope | Mode | Agents to Activate |
-|-------|------|--------------------|
-| Unvalidated idea | EXPLORE | Designer → Engineer |
-| New validated feature | BUILD | All 8, in sequence |
-| Bug fix | BUILD | Engineer → QA → Security |
-| UI tweak | BUILD | Designer → Engineer → UX Validator |
-| Refactor | BUILD | Architect → Engineer → QA |
-| Performance issue | BUILD | Performance → Engineer → QA |
-| Security concern | BUILD | Security → Engineer → QA |
-| Growth optimization | SCALE | All 8 + cost analysis |
+Task routing is **automatic**. The system classifies every incoming task before acting (see "Task Complexity Levels" in Product Strategy). The classification is announced before work begins.
+
+**Override commands:**
+
+| User says | Effect |
+|-----------|--------|
+| "Just do it" / "Quick fix" / "Don't overthink this" | Forces L1 — direct action, no pipeline |
+| "Full pipeline" / "Do this properly" | Forces L3 — full 8-agent sequence |
+| "Decompose this" / "Break this down" | Forces L4 — orchestrator coordination |
+| `/route [task]` | Explicit classification with structured output |
+
+**If you disagree with the classification, say so.** The system will reclassify with your input.
+
+**Quick reference:**
+
+| Task Type | Level | Pipeline |
+|-----------|-------|----------|
+| Fix typo, rename, lint fix | L1 | Engineer → Done |
+| Bug fix, small refactor, UI tweak | L2 | Engineer → Validator(s) → Gate 4 |
+| New feature, API integration, new screen | L3 | Full pipeline, all gates |
+| MVP build, system-wide refactor, multi-feature | L4 | Orchestrator → parallel subtasks → merge |
 
 ### Commands
 

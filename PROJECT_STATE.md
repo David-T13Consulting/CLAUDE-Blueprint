@@ -18,9 +18,11 @@
 
 ## What Exists
 
-- CLAUDE.md blueprint
-- Agent skills (9) in `.claude/skills/`
-- Custom subagents (3) in `.claude/agents/`
+- CLAUDE.md blueprint (with L4 adaptive task routing)
+- Agent skills (10) in `.claude/skills/` — including `/route` for task complexity classification
+- Custom subagents (5) in `.claude/agents/` — including orchestrator and eval-judge
+- Structured I/O contracts in `.claude/contracts/schemas.md`
+- Eval framework with 8 rubrics in `.claude/evals/rubrics/`
 - Memory files (this file + BACKLOG, DECISIONS, CONVENTIONS)
 
 ## Session Log

@@ -116,5 +116,37 @@ After presenting the performance report (and QA, Security, UX Validation reports
 
 Do NOT ship, merge, or mark complete without explicit Product Owner approval.
 
+## Structured Output (MANDATORY)
+
+After the human-readable report above, append a structured contract block. This block is consumed by the orchestrator and eval judge. It MUST be present and match the schema in `.claude/contracts/schemas.md`.
+
+```yaml
+# CONTRACT: perf_output
+feature: "[feature name]"
+render:
+  fps_target_met: [true/false]
+  unnecessary_rerenders: [true/false]
+  native_driver: [true/false]
+memory:
+  bounded: [true/false]
+  cleanup_on_unmount: [true/false]
+  leak_potential: ["risk1"]
+network:
+  redundant_calls: [true/false]
+  caching_implemented: [true/false]
+  timeout_handling: [true/false]
+bundle:
+  size_impact_kb: [float or null]
+  new_dependencies: ["dep1"]
+  justified: [true/false]
+cost:
+  tokens_per_interaction: [integer or null]
+  estimated_cost_per_user_day: [float or null]
+  optimizations: ["optimization1"]
+verdict: "PASS" | "OPTIMIZE" | "BLOCK"
+veto: [true/false]
+veto_reason: [string or null]
+```
+
 ## Handoff
 If approved, the feature is **APPROVED FOR RELEASE**. Update BACKLOG.md to mark the item complete. Update PROJECT_STATE.md with the new feature.

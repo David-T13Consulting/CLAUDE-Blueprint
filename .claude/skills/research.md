@@ -100,5 +100,34 @@ After presenting the research report, **STOP and wait for Product Owner approval
 
 Do NOT proceed to `/design` without explicit approval. "Go" or "Proceed" is sufficient.
 
+## Structured Output (MANDATORY)
+
+After the human-readable report above, append a structured contract block. This block is consumed by the orchestrator and eval judge. It MUST be present and match the schema in `.claude/contracts/schemas.md`.
+
+```yaml
+# CONTRACT: research_output
+problem: "[one-sentence problem statement]"
+target_user: "[who has this problem]"
+validation_scores:
+  pain: [1-10]
+  frequency: [1-10]
+  alternatives: [1-10]
+  willingness_to_pay: [1-10]
+  feasibility: [1-10]
+  market_size: [1-10]
+  average: [float]
+decision: "GREEN_LIGHT" | "EXPLORE_ONLY" | "PARK_IT"
+user_stories:
+  - "[story 1]"
+  - "[story 2]"
+failure_modes:
+  - "[mode 1]"
+competitive_gaps:
+  - "[gap 1]"
+verdict: "PROCEED" | "EXPLORE_FIRST" | "DO_NOT_BUILD"
+veto: [true/false]
+veto_reason: [string or null]
+```
+
 ## Handoff
 If approved, the output is passed to the **Product Designer** (`/design`). The Designer MUST reference this research report — they cannot invent new user stories or ignore identified failure modes.

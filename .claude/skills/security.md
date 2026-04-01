@@ -97,5 +97,34 @@ VERDICT: ✅ SECURE / ❌ BLOCK (fix critical/high issues first)
 ## Veto Power
 If ANY critical or high severity vulnerability is found, VETO. No exceptions. "Security is not a feature. It's a prerequisite."
 
+## Structured Output (MANDATORY)
+
+After the human-readable report above, append a structured contract block. This block is consumed by the orchestrator and eval judge. It MUST be present and match the schema in `.claude/contracts/schemas.md`.
+
+```yaml
+# CONTRACT: security_output
+scope: "[what was audited]"
+files_reviewed: ["file1.ts", "file2.ts"]
+findings:
+  - id: "VULN-001"
+    severity: "critical" | "high" | "medium" | "low"
+    category: "[OWASP category]"
+    description: "[what's wrong]"
+    file: "[file path]"
+    line: [integer or null]
+    fix: "[how to fix]"
+counts:
+  critical: [integer]
+  high: [integer]
+  medium: [integer]
+  low: [integer]
+dependency_audit:
+  vulnerabilities: [integer]
+  outdated: [integer]
+verdict: "PASS" | "BLOCK"
+veto: [true/false]
+veto_reason: [string or null]
+```
+
 ## Handoff
 If passing, output goes to **UX Validator** (`/validate`). If vulnerabilities found, output goes back to **Engineer** with specific fix instructions.

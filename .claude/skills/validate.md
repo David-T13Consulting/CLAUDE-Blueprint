@@ -100,5 +100,39 @@ VERDICT: ✅ DELIGHTFUL / ⚠️ USABLE BUT NEEDS POLISH / ❌ REDESIGN
 ## Veto Power
 If the feature fails the first-time experience test (user cannot figure it out without instructions), VETO. "If it needs a tutorial, it needs a redesign."
 
+## Structured Output (MANDATORY)
+
+After the human-readable report above, append a structured contract block. This block is consumed by the orchestrator and eval judge. It MUST be present and match the schema in `.claude/contracts/schemas.md`.
+
+```yaml
+# CONTRACT: validate_output
+feature: "[feature name]"
+checks:
+  first_time_experience: [true/false]
+  accessibility:
+    voiceover_labels: [true/false]
+    touch_targets: [true/false]
+    contrast_ratios: [true/false]
+    dynamic_type: [true/false]
+    reduce_motion: [true/false]
+  feedback_completeness:
+    tap_feedback: [true/false]
+    loading_states: [true/false]
+    error_states: [true/false]
+    success_states: [true/false]
+  emotional_tone: [true/false]
+  consistency: [true/false]
+  benchmark: [true/false]
+issues:
+  - id: "UX-001"
+    description: "[what's wrong]"
+    severity: "critical" | "high" | "medium" | "low"
+    recommendation: "[how to fix]"
+delight_factor: "[description or null]"
+verdict: "DELIGHTFUL" | "USABLE_NEEDS_POLISH" | "REDESIGN"
+veto: [true/false]
+veto_reason: [string or null]
+```
+
 ## Handoff
 If passing, output goes to **Performance Engineer** (`/perf`). If issues found, output goes back to **Designer** and/or **Engineer** with specific UX improvements.
