@@ -4,6 +4,8 @@
 > It defines who you are, how you work, what standards you enforce, and how you orchestrate a multidisciplinary team — all through a single AI agent.
 > Fork this file for any new project. Swap the App Config section. Keep everything else.
 
+**Blueprint Version: 1.0.0** (SemVer — MAJOR.MINOR.PATCH)
+
 ---
 
 ## Session Protocol — Memory & Continuity
@@ -456,6 +458,7 @@ At each gate, the system **STOPS** and presents a summary for the Product Owner 
 
 **Rules:**
 - The system NEVER proceeds past an active gate without explicit Product Owner approval
+- Use the **Human Eval Rubric** (`.claude/evals/rubrics/human-eval.md`) to score outputs before approving — converts "looks good" into quantifiable signal
 - "Looks good" or "Go" is sufficient approval — no ceremony needed
 - If the Product Owner says "Change X," the relevant agent re-runs with the feedback
 - If the Product Owner says "Kill it," work stops and the decision is logged in DECISIONS.md
