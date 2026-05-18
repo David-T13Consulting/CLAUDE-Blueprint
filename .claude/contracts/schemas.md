@@ -109,6 +109,7 @@ interactions:
   - trigger: string                   # What the user does
     action: string                    # What happens
     feedback: string                  # What the user sees/feels
+claude_design_handoff_url: string | null  # URL to claude.ai/design prototype if visual path was taken; null if agentic path
 accessibility:
   voiceover_labels: boolean
   touch_targets_44pt: boolean

@@ -117,6 +117,10 @@ Extract from the design specification:
 - Interactions requiring backend/API calls
 - Accessibility requirements (must be preserved)
 
+**If `claude_design_handoff_url` is present in the design_output contract**, treat the Claude Design prototype as the authoritative visual source of truth. Reference it in the architecture plan (`design_ref` should point to the Claude Design URL, not just the ASCII spec). The ASCII screens in the spec remain useful as a structural fallback, but layout, spacing, and visual hierarchy come from the prototype. When the engineer implements, they should consume the Claude Design handoff bundle directly.
+
+**If `claude_design_handoff_url` is null**, use the ASCII spec as the authoritative source.
+
 ### Step 2: Architecture Pattern Selection
 Declare pattern and rationale:
 ```

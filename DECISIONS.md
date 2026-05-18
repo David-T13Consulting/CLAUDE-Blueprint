@@ -6,6 +6,17 @@
 
 ---
 
+## D-009: Claude Design Integration as Optional Visual Path at Gate 2
+**Date**: 2026-05-18
+**Decision**: At Gate 2 (end of `/design`), the Product Owner picks between two paths to `/architect`: **agentic** (current flow — ASCII spec is authoritative) or **visual** (refine in `claude.ai/design`, return with a handoff URL, prototype becomes authoritative). Added optional `claude_design_handoff_url: string | null` field to the `design_output` contract. Updated `commands/design.md`, `agents/designer.md`, and `agents/architect.md` to present the choice and consume the URL when present.
+**Rationale**: Claude Design (launched April 2026, powered by Opus 4.7) produces real visual prototypes and a Claude Code handoff bundle. It's a meaningful upgrade over ASCII mockups for UI-heavy features, but it's a UI-only workflow (no API yet) requiring the user to step out of the agentic flow. Making it a choice respects both speed (agentic path is faster for simple features) and quality (visual path is better when prototype fidelity matters).
+**When to recommend visual path**: UI-heavy features, design system enforcement needed, stakeholder buy-in required before engineering, multiple design directions worth exploring.
+**When to recommend agentic path**: structurally simple features, mature design system, speed > polish.
+**Reversibility**: When Claude Design exposes an API, the designer subagent can call it directly instead of handing off to the user — at that point the branch point collapses back into a single automated step.
+**Status**: Active
+
+---
+
 ## D-008: v2.0.0 Migration Complete — Smoke Tests Passed
 **Date**: 2026-05-18
 **Decision**: v2.0.0 architecture migration is complete. All 7 phases executed. Smoke tests passed: 31/31 files have valid frontmatter, all role agents have CONTRACT blocks, all commands reference correct subagents.

@@ -215,12 +215,23 @@ Also VETO if:
 
 ## Approval Gate
 
-After presenting, **STOP and wait for Product Owner approval**:
+After presenting, **STOP and wait for Product Owner approval**. Offer both paths explicitly:
 
 > **GATE 2: BUILD?**
-> Here's the design. Does this match your vision?
+> Here's the design. Does this match your vision? Choose your next step:
+>
+> **Agentic path** (stay in this flow):
+> - ✅ Approved — proceed to `/architect`
+> - 🔄 Change [X] — I'll re-run with feedback
+> - ❌ Scrap and redesign
+>
+> **Visual path** (refine in Claude Design):
+> - 🎨 Take this spec to `claude.ai/design`, produce a polished visual prototype, then return with the Claude Design URL. I'll add `claude_design_handoff_url` to the design_output contract so the architect uses the visual prototype as the source of truth instead of the ASCII mockups.
+>
+> Recommend the visual path when: the feature is UI-heavy, the design system needs to be enforced, stakeholders need to see a real prototype before engineering invests effort, or the user wants to explore multiple design directions.
+> Recommend the agentic path when: the feature is structurally simple, the design system is already mature, or speed matters more than visual polish.
 
-Do NOT proceed to architect without explicit approval.
+Do NOT proceed to architect without explicit approval. If the user picks the visual path, wait for them to return with the Claude Design URL, then update the contract before handing off.
 
 ## Structured Output (MANDATORY)
 
@@ -240,6 +251,7 @@ interactions:
     action: "[what happens]"
     feedback: "[what user sees/feels]"
     timing_ms: [integer]
+claude_design_handoff_url: null  # string URL if user took the visual path via claude.ai/design; null if agentic path
 accessibility:
   voiceover_labels: true
   touch_targets_44pt: true

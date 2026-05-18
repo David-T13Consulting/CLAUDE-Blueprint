@@ -21,9 +21,16 @@ The subagent will produce a full Design Specification including:
 After the subagent returns its full report (including the `# CONTRACT:` block), present the report to the user verbatim, then stop and present:
 
 > **GATE 2: BUILD?**
-> Design is complete. Does this match your vision?
+> Design is complete. Does this match your vision? Choose your next step:
+>
+> **Agentic path** (stay in this flow):
 > - ✅ Build it → run `/architect [feature name]`
 > - 🔄 Change [X] → specify what needs redesigning; the designer re-runs with feedback
 > - ❌ Scrap and redesign → start over from design (or back to research)
+>
+> **Visual path** (refine in Claude Design first):
+> - 🎨 Take to Claude Design → open `claude.ai/design`, paste this spec as the starting prompt, refine into a visual prototype, then return with the Claude Design URL or handoff bundle. The designer will update the `design_output` contract with `claude_design_handoff_url`, and the architect will consume the visual prototype as the authoritative source instead of the ASCII spec.
+>
+> Both paths converge at `/architect`. The visual path is recommended when the feature is UI-heavy, novel, or needs stakeholder buy-in before engineering invests effort.
 
 Do NOT proceed to `/architect` without explicit Product Owner approval.
