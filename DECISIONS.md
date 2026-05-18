@@ -6,6 +6,21 @@
 
 ---
 
+## D-008: v2.0.0 Migration Complete — Smoke Tests Passed
+**Date**: 2026-05-18
+**Decision**: v2.0.0 architecture migration is complete. All 7 phases executed. Smoke tests passed: 31/31 files have valid frontmatter, all role agents have CONTRACT blocks, all commands reference correct subagents.
+**What shipped**:
+- 10 auto-loading methodology skills (JTBD, Kano, Nielsen, Testing Pyramid, OWASP Mobile, OWASP LLM, STRIDE, CVSS, route, memory-protocol)
+- 8 role subagents with model right-sizing and tool whitelists
+- 10 slash commands routing to subagents
+- 4 hooks (SessionStart, PreToolUse, PostToolUse, Stop)
+- `engineer_output` contract added to schemas.md
+- Orchestrator updated to reference new agent roster with parallel spawn pattern
+**Pending**: T-42a (eval-judge automation hook), T-80/T-81/T-82 (additional methodology skills)
+**Status**: Active
+
+---
+
 ## D-007: No Backwards Compatibility for v2.0.0 Architecture Migration
 **Date**: 2026-05-18
 **Decision**: Clean break. This is a blueprint repo with no live forks consuming it. Old `.claude/skills/*.md` flat files are deleted, not symlinked or kept.
