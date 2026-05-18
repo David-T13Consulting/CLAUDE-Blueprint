@@ -6,7 +6,7 @@ tools:
   - Grep
   - Glob
   - WebSearch
-model: claude-opus-4-5
+model: claude-opus-4-7
 maxTurns: 20
 ---
 
