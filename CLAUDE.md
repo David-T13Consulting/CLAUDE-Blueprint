@@ -625,51 +625,64 @@ State which agent you're operating as:
 [PERFORMANCE] Checking render performance...
 ```
 
-### Agent Skills (Invocable Commands)
+### Slash Commands & Subagents
 
-Each agent is available as a structured skill with enforced inputs, process, and output format:
+Each slash command spawns the matching role subagent. Commands enforce prerequisites and stop at the correct gate for Product Owner approval.
 
-| Command | Agent | Input | Output |
-|---------|-------|-------|--------|
-| `/route [task]` | Task Router | Task description | Complexity classification (L1-L4) + pipeline plan |
-| `/research [problem]` | UX Researcher | Problem statement | Validation scorecard + user stories + recommendation |
-| `/design [feature]` | Product Designer | Feature name (requires research first) | Screen flows + states + component specs |
-| `/architect [feature]` | Software Architect | Feature name (requires design first) | Data model + services + file plan + implementation order |
-| `/qa [feature]` | QA Engineer | Feature name (requires implementation) | Test plan + test code + bug report + verdict |
-| `/security [scope]` | Security Auditor | Feature or "full app" | Attack surface + vulnerability report + verdict |
-| `/validate [feature]` | UX Validator | Feature name (requires implementation) | Accessibility + feedback + tone + benchmark + verdict |
-| `/perf [feature]` | Performance Engineer | Feature name (final gate) | Render + memory + network + cost analysis + verdict |
+| Command | Subagent | Input | Output | Gate |
+|---------|----------|-------|--------|------|
+| `/route [task]` | (auto-loading skill, no subagent) | Task description | L1-L4 classification + pipeline plan | none |
+| `/research [problem]` | `researcher` | Problem statement | Validation scorecard + JTBD + Kano + user stories | Gate 1 |
+| `/design [feature]` | `designer` | Feature name | Screen flows + states + component specs + heuristic audit | Gate 2 |
+| `/architect [feature]` | `architect` | Feature name | Data model + services + file plan + implementation order | Gate 3 |
+| `/qa [feature]` | `qa` | Feature name | Test plan + test code + bug report + PASS/BLOCK verdict | → Gate 4 |
+| `/security [scope]` | `security` | Feature or "full app" | STRIDE + OWASP audit + CVSS findings + PASS/BLOCK verdict | → Gate 4 |
+| `/validate [feature]` | `ux-validator` | Feature name | WCAG 2.2 + feedback + tone + benchmark + verdict | → Gate 4 |
+| `/perf [feature]` | `perf-engineer` | Feature name | Render + memory + network + cost analysis + Gate 4 summary | Gate 4 |
+| `/ship [feature]` | All 4 in parallel | Feature name | Merged Gate 4 report from QA + Security + UX + Perf | Gate 4 |
+| `/checkpoint` | (main context, no subagent) | Optional: phase name | OVERDUE/BLOCKED/UPCOMING decision audit | none |
+| `/readiness` | (main context, no subagent) | Optional: `beta`, `production`, `hotfix` | GO/NO-GO verdict with blockers | none |
+
+**How they work:**
+- Each command file lives in `.claude/commands/[name].md`
+- Each command validates prerequisites before spawning (e.g., `/design` refuses without research)
+- Each subagent produces a structured `# CONTRACT:` YAML block consumed by the orchestrator and eval judge
+- Role subagent definitions live in `.claude/agents/[name].md`
+- Reusable methodology (JTBD, Kano, STRIDE, Testing Pyramid, etc.) lives in `.claude/skills/[name]/SKILL.md` — these auto-load based on context
 
 **Enforcement rules:**
-- Each skill checks prerequisites. `/design` will refuse to run without a prior `/research` output.
-- Each skill produces a structured report (not freeform text).
-- Each skill has veto power. A BLOCK verdict means work goes back, not forward.
-- Skills are defined in `.claude/skills/` — read them for full process details.
+- Each command checks prerequisites. `/design` will refuse to run without a prior `/research` output.
+- Each subagent produces a structured report (not freeform text).
+- Each subagent has veto power. A BLOCK verdict means work goes back, not forward.
 
 **Structured output requirement:**
-- Every skill report MUST include a structured YAML contract block at the end (`# CONTRACT:`)
+- Every subagent report MUST include a structured YAML contract block at the end (`# CONTRACT:`)
 - Contract schemas are defined in `.claude/contracts/schemas.md`
 - The orchestrator and eval judge consume ONLY the structured block
-- The human-readable report above the block remains unchanged
 
 **Full pipeline invocation (new feature):**
 ```
-/research [problem]     → validates the problem
-/design [feature]       → defines the experience
-/architect [feature]    → plans the system
+/research [problem]     → validates the problem (Gate 1)
+/design [feature]       → defines the experience (Gate 2)
+/architect [feature]    → plans the system (Gate 3)
 [Engineer implements]
+/ship [feature]         → runs QA + Security + UX + Perf in parallel (Gate 4)
+```
+
+Or run validators individually:
+```
 /qa [feature]           → tests everything
 /security [feature]     → audits for vulnerabilities
 /validate [feature]     → reviews the UX
-/perf [feature]         → checks performance + cost
+/perf [feature]         → checks performance + cost (also presents Gate 4)
 ```
 
-**Decision and readiness skills:**
+**Decision and readiness commands:**
 
-| Command | Agent | Input | Output |
-|---------|-------|-------|--------|
-| `/checkpoint` | Decision Auditor | Optional: phase name | Overdue/blocked/upcoming decisions for current phase |
-| `/readiness` | Release Gatekeeper | Optional: `testflight`, `appstore`, `ota` | GO/NO-GO verdict with specific blockers |
+| Command | Runs In | Input | Output |
+|---------|---------|-------|--------|
+| `/checkpoint` | Main context | Optional: phase name | OVERDUE/BLOCKED/UPCOMING decisions for current phase |
+| `/readiness` | Main context | Optional: `beta`, `production`, `hotfix` | GO/NO-GO verdict with specific blockers |
 
 ### Proactive Decision Triggers (MANDATORY)
 

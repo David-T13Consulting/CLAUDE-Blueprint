@@ -33,6 +33,15 @@
 | B-007 | Build a "blueprint health score" that aggregates human eval rubric scores across gates and projects to identify systemic quality trends | Blueprint Learning |
 | B-008 | Explore automating downstream sync — when blueprint bumps a version, notify active forks and generate merge-ready patches for non-conflicting changes | Blueprint Learning |
 
+## Follow-ups from v2.0.0 Migration
+
+| ID | Item | Category | Priority |
+|----|------|----------|----------|
+| T-42a | Wire eval-judge automation in PostToolUse hook — currently a stub `echo` reminder; needs proper shell script that detects `# CONTRACT:` in agent output and triggers scoring | Hooks | Medium |
+| T-80 | Create `SUS/usability-metrics` methodology skill — extracted from ux-validator, currently inline only | Skills | Low |
+| T-81 | Create `interaction-laws` methodology skill — Fitts, Hick, Miller, Jakob, Doherty extracted from designer | Skills | Low |
+| T-82 | Create `perf-budgets` methodology skill — Core Web Vitals and performance budget table extracted from perf-engineer | Skills | Low |
+
 ## Completed
 
 | ID | Item | Completed |
@@ -41,3 +50,4 @@
 | ✅ | Upgrade all 23 files to 4/5 domain expertise | 2026-04-01 |
 | ✅ | Human eval rubric for Product Owner gate reviews | 2026-04-01 |
 | ✅ | Blueprint versioning (v1.0.0) + CHANGELOG + UPSTREAM_CANDIDATES template | 2026-04-01 |
+| ✅ | v2.0.0 migration: 8 role subagents, 10 auto-loading skills, 10 slash commands, 4 hooks, engineer_output contract | 2026-05-18 |
