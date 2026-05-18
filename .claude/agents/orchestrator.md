@@ -8,7 +8,7 @@ tools:
   - Glob
   - Write
   - Edit
-model: sonnet
+model: claude-opus-4-5
 maxTurns: 50
 ---
 
