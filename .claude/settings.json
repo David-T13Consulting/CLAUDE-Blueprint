@@ -47,7 +47,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '[POST-AGENT] If the subagent output contains a # CONTRACT: block, consider spawning eval-judge to score it. Track in BACKLOG as T-42a for full automation.'"
+            "command": "/home/user/CLAUDE-Blueprint/.claude/hooks/post-agent-eval.sh"
           }
         ]
       }

@@ -37,10 +37,10 @@
 
 | ID | Item | Category | Priority |
 |----|------|----------|----------|
-| T-42a | Wire eval-judge automation in PostToolUse hook — currently a stub `echo` reminder; needs proper shell script that detects `# CONTRACT:` in agent output and triggers scoring | Hooks | Medium |
-| T-80 | Create `SUS/usability-metrics` methodology skill — extracted from ux-validator, currently inline only | Skills | Low |
-| T-81 | Create `interaction-laws` methodology skill — Fitts, Hick, Miller, Jakob, Doherty extracted from designer | Skills | Low |
-| T-82 | Create `perf-budgets` methodology skill — Core Web Vitals and performance budget table extracted from perf-engineer | Skills | Low |
+| ✅ T-42a | Wire eval-judge automation in PostToolUse hook — shell script detects `# CONTRACT:` in agent output and emits scoring reminder | Hooks | Medium |
+| ✅ T-80 | Create `sus-usability-metrics` methodology skill — SUS scoring, usability benchmarks, Sweller's CLT, Norman's 3 levels, A/B readiness | Skills | Low |
+| ✅ T-81 | Create `interaction-laws` methodology skill — Fitts, Hick, Miller, Jakob, Doherty, Postel, Peak-End Rule | Skills | Low |
+| ✅ T-82 | Create `perf-budgets` methodology skill — Core Web Vitals, budget table, re-render checklist, memory leak patterns, AI cost tiering | Skills | Low |
 
 ## Completed
 
@@ -51,3 +51,4 @@
 | ✅ | Human eval rubric for Product Owner gate reviews | 2026-04-01 |
 | ✅ | Blueprint versioning (v1.0.0) + CHANGELOG + UPSTREAM_CANDIDATES template | 2026-04-01 |
 | ✅ | v2.0.0 migration: 8 role subagents, 10 auto-loading skills, 10 slash commands, 4 hooks, engineer_output contract | 2026-05-18 |
+| ✅ | T-42a/T-80/T-81/T-82: post-agent eval hook + 3 extracted methodology skills (sus-usability-metrics, interaction-laws, perf-budgets) | 2026-05-18 |
