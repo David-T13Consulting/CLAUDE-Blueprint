@@ -169,6 +169,49 @@ veto_reason: string | null
 
 ---
 
+### engineer_output
+
+Produced by: Engineer subagent (implementation phase)
+Consumed by: Orchestrator (routing to QA), eval judge
+
+```yaml
+# CONTRACT: engineer_output
+feature: string
+architecture_ref: string              # Architecture spec reference
+files_changed:
+  created:
+    - path: string
+      purpose: string
+  modified:
+    - path: string
+      change: string
+tests_added:
+  - file: string
+    test_count: integer
+production_ready_checks:
+  no_any_types: boolean               # Zero TypeScript any
+  no_console_logs: boolean            # No debug logging
+  no_todo_comments: boolean           # No TODO/FIXME left
+  error_handling_complete: boolean    # All sad paths handled
+  memory_bounded: boolean             # No unbounded growth
+  inputs_validated: boolean           # All user inputs validated
+  accessibility_labels: boolean       # Interactive elements labeled
+sleep_test_pass: boolean              # Safe to ship to 100K users tonight?
+contracts_read:                       # Prerequisite contracts consumed
+  research_output: boolean
+  design_output: boolean
+  architecture_output: boolean
+known_issues:
+  - description: string
+    severity: "high" | "medium" | "low"
+    plan: string
+verdict: "READY_FOR_QA" | "NEEDS_REVISION"
+veto: boolean
+veto_reason: string | null
+```
+
+---
+
 ### qa_output
 
 Produced by: `/qa [feature]`

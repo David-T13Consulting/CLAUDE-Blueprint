@@ -245,19 +245,32 @@ Before presenting the decomposition plan (Gate O-1), verify:
 ## Parallel Execution Patterns
 
 ### Post-Implementation Validation (most common)
+
+Spawn all four validators in a single message (one Agent tool call each):
+
 ```
-Implementation complete
+Implementation complete (engineer subagent)
         ↓
-┌─────────────────────────────────────┐
-│  QA    Security    UX      Perf     │  ← All run as parallel subagents
-│  ↓       ↓        ↓        ↓       │
-│ report  report   report   report    │
-└─────────────────────────────────────┘
+┌──────────────────────────────────────────────────┐
+│  qa        security    ux-validator  perf-engineer│  ← 4 parallel Agent calls
+│  ↓           ↓            ↓             ↓        │
+│ qa_output  security_output validate_output perf_output│
+└──────────────────────────────────────────────────┘
         ↓
-  Orchestrator merges all 4 reports
+  Orchestrator merges all 4 CONTRACT blocks
         ↓
   Gate O-2: Human reviews merged result
 ```
+
+**Concrete parallel spawn:**
+```
+Agent(subagent_type="qa", prompt="QA test [feature]. Read engineer_output contract first.")
+Agent(subagent_type="security", prompt="Security audit [feature]. Read engineer_output contract first.")
+Agent(subagent_type="ux-validator", prompt="UX validate [feature]. Read engineer_output contract first.")
+Agent(subagent_type="perf-engineer", prompt="Performance review [feature]. Read engineer_output contract first.")
+```
+
+All four in a single message — they run concurrently.
 
 ### Multi-Feature Implementation (sequential then parallel)
 ```
