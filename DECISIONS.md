@@ -6,6 +6,46 @@
 
 ---
 
+## D-007: No Backwards Compatibility for v2.0.0 Architecture Migration
+**Date**: 2026-05-18
+**Decision**: Clean break. This is a blueprint repo with no live forks consuming it. Old `.claude/skills/*.md` flat files are deleted, not symlinked or kept.
+**Rationale**: Backwards-compat shims add complexity and become permanent. No forks are affected. Future forks will fork from v2.0.0 onward.
+**Status**: Active
+
+---
+
+## D-006: Subagent Naming Convention
+**Date**: 2026-05-18
+**Decision**: Subagents use role nouns (`researcher`, `designer`, `architect`, `engineer`, `qa`, `security`, `ux-validator`, `perf-engineer`). Slash commands keep verb form (`/research`, `/design`, etc.).
+**Rationale**: Subagents are team members (nouns); slash commands are instructions (verbs). Separates the "who" from the "do it".
+**Status**: Active
+
+---
+
+## D-005: Model Right-Sizing Per Subagent
+**Date**: 2026-05-18
+**Decision**: orchestrator/researcher/architect/security → opus (deep reasoning). engineer/designer/qa/ux-validator/perf-engineer → sonnet (implementation). eval-judge/codebase-explorer → haiku (deterministic, fast).
+**Rationale**: Cost/capability fit. Haiku for deterministic tasks, Opus for tasks requiring judgment and synthesis, Sonnet as the production default.
+**Status**: Active
+
+---
+
+## D-004: QA and Security Duplication Resolution
+**Date**: 2026-05-18
+**Decision**: Collapse `skills/qa.md` + `agents/qa-runner.md` into a single `agents/qa.md`. Same for security (`skills/security.md` + `agents/security-reviewer.md` → `agents/security.md`). Old files deleted in Phase 6.
+**Rationale**: Two definitions of the same role diverge over time and create confusion about which is authoritative. One subagent per role, with full depth inside it.
+**Status**: Active
+
+---
+
+## D-003: Primitives — What Goes Where
+**Date**: 2026-05-18
+**Decision**: Roles → `.claude/agents/` (subagents with frontmatter, tool whitelist, model). Methodology → `.claude/skills/<name>/SKILL.md` (auto-loading capability packs). User triggers → `.claude/commands/` (slash commands, thin wrappers). Enforcement → `.claude/settings.json` hooks.
+**Rationale**: Claude Code (May 2026) has four distinct primitives — Skill / Subagent / Slash Command / Hook — that serve different purposes. Using Skills for role-playing (the v1 pattern) means one agent context has no tool isolation, no model assignment, no parallelism, and no auto-load. Using proper primitives enables all four.
+**Status**: Active
+
+---
+
 ## D-002: Blueprint Learning Loop Architecture
 **Date**: 2026-04-01
 **Decision**: Implemented blueprint versioning (SemVer 1.0.0), CHANGELOG.md, and UPSTREAM_CANDIDATES.md template. Future improvements (retrospective skill, sync skill, baseline aggregation) tracked in BACKLOG.md as B-001 through B-008.
