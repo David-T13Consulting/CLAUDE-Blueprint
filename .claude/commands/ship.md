@@ -81,3 +81,22 @@ If approved:
 - Update `PROJECT_STATE.md` with the new feature in "What Exists"
 - Log the Gate 4 approval in `DECISIONS.md`
 - Commit: `chore: update project memory — Gate 4 approved, [feature] shipped`
+
+**Log all events to `.claude/metrics/log.md`** (append after Product Owner decision):
+
+For each of the 4 validators, log its agent run and eval result:
+```
+| [date] | [feature] | redundancy | agent_run | qa | — |
+| [date] | [feature] | redundancy | agent_run | security | — |
+| [date] | [feature] | redundancy | agent_run | ux-validator | — |
+| [date] | [feature] | redundancy | agent_run | perf-engineer | — |
+```
+
+For the gate decision:
+- All pass → `| [date] | [feature] | collaboration | handoff_success | gate_4_approved | — |` and `| [date] | [feature] | intervention | gate_approved | gate_4 | — |`
+- Fix X first (rework) → `| [date] | [feature] | collaboration | handoff_failure | gate_4_rework | [what's blocking] |` and `| [date] | [feature] | redundancy | rework | [agent]_rerun | [reason] |`
+- Any BLOCK overridden → `| [date] | [feature] | intervention | veto_overridden | gate_4_[qa/security/ux/perf] | [reason] |`
+
+For each validator verdict, log eval pass/fail:
+- PASS / DELIGHTFUL / SHIP IT → `| [date] | [feature] | eval | eval_pass | [qa/security/ux/perf] | [score if known] |`
+- BLOCK / REDESIGN → `| [date] | [feature] | eval | eval_fail | [qa/security/ux/perf] | [top issue] |`

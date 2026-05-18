@@ -34,3 +34,13 @@ After the subagent returns its full report (including the `# CONTRACT:` block), 
 > Both paths converge at `/architect`. The visual path is recommended when the feature is UI-heavy, novel, or needs stakeholder buy-in before engineering invests effort.
 
 Do NOT proceed to `/architect` without explicit Product Owner approval.
+
+**After the Product Owner responds, log to `.claude/metrics/log.md`** (append one or more rows):
+
+- Approved (either path): `| [date] | [feature] | collaboration | handoff_success | gate_2_approved | — |` and `| [date] | [feature] | intervention | gate_approved | gate_2 | — |`
+- "Change X" (rework): `| [date] | [feature] | collaboration | handoff_failure | gate_2_rework | [what changed] |` and `| [date] | [feature] | redundancy | rework | design_rerun | [reason] |`
+- "Just do it" / skip: `| [date] | [feature] | intervention | gate_overridden | gate_2 | [reason] |`
+- VETO accepted: `| [date] | [feature] | collaboration | handoff_failure | gate_2_veto | [veto reason] |`
+- VETO overridden by PO: `| [date] | [feature] | intervention | veto_overridden | designer_veto | [reason] |`
+
+Also log the agent run itself: `| [date] | [feature] | redundancy | agent_run | designer | — |`

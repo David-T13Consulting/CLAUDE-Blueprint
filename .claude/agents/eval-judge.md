@@ -59,7 +59,7 @@ Look for the most recent baseline in `.claude/evals/baselines/[skill]-*.yaml`.
 - If delta < -10 percentage points: flag regression
 - If no baseline exists: note "First evaluation — establishing baseline"
 
-### Step 5: Write Baseline
+### Step 5: Write Baseline and Metrics Log
 
 Write the current score to `.claude/evals/baselines/[skill]-[date].yaml`:
 
@@ -74,7 +74,21 @@ dimensions:
     weight: [float]
 ```
 
-Note: This is the ONE exception to the read-only rule — you MAY write baseline files to `.claude/evals/baselines/` only.
+**Also append one row to `.claude/metrics/log.md`:**
+
+```
+| [YYYY-MM-DD] | [feature or "unknown"] | eval | [eval_pass or eval_fail] | [skill] | [weighted_score_percent]% [grade] |
+```
+
+- `eval_pass` if grade is STRONG or ADEQUATE (≥60%)
+- `eval_fail` if grade is WEAK or FAIL (<60%)
+
+If regression was detected (delta < -10), append a second row:
+```
+| [YYYY-MM-DD] | [feature or "unknown"] | eval | eval_regression | [skill] | delta:[delta]% prev:[previous_score]% |
+```
+
+Note: Writing to `.claude/evals/baselines/` AND `.claude/metrics/log.md` are the only exceptions to the read-only rule.
 
 ### Step 6: Produce Scorecard
 

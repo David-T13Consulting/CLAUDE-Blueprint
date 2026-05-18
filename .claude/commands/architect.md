@@ -28,3 +28,13 @@ After the subagent returns its full report (including the `# CONTRACT:` block), 
 > - ❌ Different approach → restart architecture with new constraints
 
 Do NOT begin implementation without explicit Product Owner approval.
+
+**After the Product Owner responds, log to `.claude/metrics/log.md`** (append one or more rows):
+
+- Approved: `| [date] | [feature] | collaboration | handoff_success | gate_3_approved | — |` and `| [date] | [feature] | intervention | gate_approved | gate_3 | — |`
+- "Adjust X" (rework): `| [date] | [feature] | collaboration | handoff_failure | gate_3_rework | [what changed] |` and `| [date] | [feature] | redundancy | rework | architect_rerun | [reason] |`
+- "Just do it" / skip: `| [date] | [feature] | intervention | gate_overridden | gate_3 | [reason] |`
+- VETO accepted: `| [date] | [feature] | collaboration | handoff_failure | gate_3_veto | [veto reason] |`
+- VETO overridden: `| [date] | [feature] | intervention | veto_overridden | architect_veto | [reason] |`
+
+Also log the agent run: `| [date] | [feature] | redundancy | agent_run | architect | — |`
