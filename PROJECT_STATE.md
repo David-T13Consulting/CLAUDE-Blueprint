@@ -2,7 +2,7 @@
 
 > **This file is the single source of truth for where the project stands RIGHT NOW.**
 > Read this first at the start of every session. Update it at every milestone.
-> Last updated: [DATE]
+> Last updated: 2026-07-31
 
 ---
 
@@ -10,11 +10,25 @@
 
 | Field | Value |
 |-------|-------|
-| **Phase** | Blueprint v1.0.0 complete — ready to fork for real projects |
-| **Pipeline Mode** | N/A (this is the blueprint itself, not a project fork) |
-| **Active Work** | None |
-| **Blocked On** | Nothing |
-| **Next Action** | Fork this repo for a real project and start building |
+| **Phase** | Job Posting Crawler — awaiting Product Owner review of vision + architecture + mockup |
+| **Pipeline Mode** | BUILD |
+| **Active Work** | Job Posting Crawler (L4-ORCHESTRATED), branch `claude/job-posting-crawler-dura0o` |
+| **Blocked On** | PO review of `docs/VISION.md`, `docs/ARCHITECTURE.md`, `docs/digest-mockup.html`. Then PRD → PO approval → build. |
+| **Next Action** | PO reviews the three docs; answers the 4 open questions in VISION.md (company list, match criteria, delivery address/time, weekday-only) |
+
+## Active Feature — Job Posting Crawler
+
+Daily crawl of self-curated company career sites (via public ATS APIs), matched
+against a PO-authored profile, delivered as one morning email digest.
+
+**Confirmed by PO**: GitHub Actions cron runtime · email digest delivery ·
+rules-first matching with Claude scoring only the survivors.
+
+**Deferred to review**: the 4 open questions listed in `docs/VISION.md`.
+
+**Known risk**: ATS endpoint shapes were verified against vendor documentation,
+not live calls — this sandbox's network policy blocks those hosts. Implementation
+task 1 is a connectivity spike that closes this.
 
 ## What Exists
 
@@ -26,7 +40,11 @@
 - Blueprint learning infrastructure: CHANGELOG.md, UPSTREAM_CANDIDATES.md template
 - Memory files (this file + BACKLOG, DECISIONS, CONVENTIONS)
 
+- Job Posting Crawler review docs: `docs/VISION.md`, `docs/ARCHITECTURE.md`, `docs/digest-mockup.html`
+
 ## Session Log
+
+- **2026-07-31**: Started Job Posting Crawler as the first real fork of the blueprint. Classified L4. PO chose GitHub Actions + email digest + rules-then-LLM matching. Produced vision, architecture, and email mockup for review. No code written yet — awaiting gate approval.
 
 - **2026-04-01**: Built L4 agentic architecture (orchestrator, eval-judge, task routing)
 - **2026-04-01**: Upgraded all 23 skill/agent/rubric files to 4/5 domain expertise

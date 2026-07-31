@@ -1,0 +1,529 @@
+<title>Morning Job Digest — Design Mockup</title>
+<style>
+  :root {
+    --bg: #FAFAFA;
+    --surface: #FFFFFF;
+    --surface-2: #F5F5F5;
+    --text: #1A1A1A;
+    --text-2: #6B7280;
+    --text-3: #9CA3AF;
+    --border: #F3F4F6;
+    --border-strong: #E5E7EB;
+    --accent: #6366F1;
+    --accent-light: #EEF2FF;
+    --success: #10B981;
+    --success-light: #ECFDF5;
+    --warning: #F59E0B;
+    --warning-light: #FFFBEB;
+    --error: #EF4444;
+    --error-light: #FEF2F2;
+    --shadow-md: 0 2px 8px rgba(0,0,0,.08);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,.12);
+    --frame: #E8E9ED;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0F0F0F; --surface: #1A1A1A; --surface-2: #232323;
+      --text: #F5F5F5; --text-2: #A1A1AA; --text-3: #71717A;
+      --border: #2A2A2A; --border-strong: #343434;
+      --accent: #818CF8; --accent-light: #1E1B4B;
+      --success: #34D399; --success-light: #052E24;
+      --warning: #FBBF24; --warning-light: #2E2005;
+      --error: #F87171; --error-light: #2E1212;
+      --shadow-md: 0 2px 8px rgba(0,0,0,.4);
+      --shadow-lg: 0 4px 16px rgba(0,0,0,.5);
+      --frame: #262626;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0F0F0F; --surface: #1A1A1A; --surface-2: #232323;
+    --text: #F5F5F5; --text-2: #A1A1AA; --text-3: #71717A;
+    --border: #2A2A2A; --border-strong: #343434;
+    --accent: #818CF8; --accent-light: #1E1B4B;
+    --success: #34D399; --success-light: #052E24;
+    --warning: #FBBF24; --warning-light: #2E2005;
+    --error: #F87171; --error-light: #2E1212;
+    --shadow-md: 0 2px 8px rgba(0,0,0,.4);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,.5);
+    --frame: #262626;
+  }
+  :root[data-theme="light"] {
+    --bg: #FAFAFA; --surface: #FFFFFF; --surface-2: #F5F5F5;
+    --text: #1A1A1A; --text-2: #6B7280; --text-3: #9CA3AF;
+    --border: #F3F4F6; --border-strong: #E5E7EB;
+    --accent: #6366F1; --accent-light: #EEF2FF;
+    --success: #10B981; --success-light: #ECFDF5;
+    --warning: #F59E0B; --warning-light: #FFFBEB;
+    --error: #EF4444; --error-light: #FEF2F2;
+    --shadow-md: 0 2px 8px rgba(0,0,0,.08);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,.12);
+    --frame: #E8E9ED;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 48px 20px 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  /* ---- page header ---- */
+  .masthead { display: flex; flex-direction: column; gap: 12px; }
+  .eyebrow {
+    font-size: 11px; font-weight: 600; letter-spacing: .09em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  h1 {
+    margin: 0; font-size: 28px; font-weight: 700; line-height: 1.2;
+    text-wrap: balance; letter-spacing: -.015em;
+  }
+  .lede { margin: 0; color: var(--text-2); max-width: 62ch; }
+  .notice {
+    display: flex; gap: 10px; align-items: baseline;
+    background: var(--warning-light);
+    border: 1px solid var(--warning);
+    border-radius: 12px; padding: 12px 16px;
+    font-size: 13px; color: var(--text);
+  }
+  .notice strong { color: var(--warning); font-weight: 600; }
+
+  /* ---- section scaffolding ---- */
+  .section { display: flex; flex-direction: column; gap: 16px; }
+  .section-head { display: flex; flex-direction: column; gap: 4px; }
+  h2 {
+    margin: 0; font-size: 20px; font-weight: 600;
+    letter-spacing: -.01em; text-wrap: balance;
+  }
+  .section-note { margin: 0; font-size: 14px; color: var(--text-2); max-width: 62ch; }
+
+  /* ---- device frame around the email ---- */
+  .frame {
+    background: var(--frame);
+    border-radius: 20px;
+    padding: 14px;
+    box-shadow: var(--shadow-lg);
+  }
+  .client-bar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 6px 12px;
+    font-size: 12px; color: var(--text-2);
+  }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 999px; background: rgba(128,128,128,.35); }
+  .client-bar .from { font-weight: 600; color: var(--text); }
+
+  .email {
+    background: var(--surface);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .email-inner { padding: 28px 24px 32px; }
+
+  /* ---- email header ---- */
+  .subject {
+    margin: 0 0 4px; font-size: 22px; font-weight: 700;
+    letter-spacing: -.015em; text-wrap: balance;
+  }
+  .meta {
+    margin: 0 0 24px; font-size: 13px; color: var(--text-2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---- posting rows ---- */
+  .postings { display: flex; flex-direction: column; gap: 12px; }
+
+  .posting {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 16px;
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+    box-shadow: var(--shadow-md);
+  }
+
+  .score {
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+    gap: 2px; padding-top: 2px;
+  }
+  .score-num {
+    font-size: 22px; font-weight: 700; line-height: 1;
+    font-variant-numeric: tabular-nums; letter-spacing: -.02em;
+  }
+  .score-label {
+    font-size: 9px; font-weight: 600; letter-spacing: .07em;
+    text-transform: uppercase; color: var(--text-3);
+  }
+  .s-strong .score-num { color: var(--success); }
+  .s-good   .score-num { color: var(--accent); }
+  .s-edge   .score-num { color: var(--warning); }
+
+  .body { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+
+  .title-row {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px;
+  }
+  .title {
+    margin: 0; font-size: 17px; font-weight: 600; line-height: 1.3;
+    color: var(--text); text-decoration: none; letter-spacing: -.01em;
+  }
+  .title:hover, .title:focus-visible { color: var(--accent); text-decoration: underline; }
+
+  .company {
+    font-size: 14px; color: var(--text-2);
+  }
+  .company::before { content: "· "; color: var(--text-3); }
+
+  .facts {
+    display: flex; flex-wrap: wrap; gap: 6px 14px;
+    font-size: 13px; color: var(--text-2);
+  }
+  .facts span { display: inline-flex; align-items: center; gap: 5px; }
+  .facts .glyph { color: var(--text-3); font-size: 11px; }
+
+  .reason {
+    margin: 0; font-size: 14px; line-height: 1.5; color: var(--text);
+  }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-size: 11px; font-weight: 500; letter-spacing: .01em;
+    padding: 3px 9px; border-radius: 999px;
+    background: var(--surface-2); color: var(--text-2);
+  }
+  .tag.hit { background: var(--accent-light); color: var(--accent); }
+  .tag.warn { background: var(--warning-light); color: var(--warning); }
+
+  /* ---- email footer ---- */
+  .email-foot {
+    margin-top: 24px; padding-top: 18px;
+    border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--text-3);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .email-foot a { color: var(--text-2); }
+  .stat-line { font-variant-numeric: tabular-nums; }
+
+  /* ---- state cards ---- */
+  .states {
+    display: grid; gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  .state {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--shadow-md);
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .state h3 {
+    margin: 0; font-size: 15px; font-weight: 600; letter-spacing: -.005em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pill {
+    font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 999px;
+  }
+  .pill.quiet { background: var(--surface-2); color: var(--text-2); }
+  .pill.warn { background: var(--warning-light); color: var(--warning); }
+  .pill.bad { background: var(--error-light); color: var(--error); }
+  .state p { margin: 0; font-size: 14px; color: var(--text-2); }
+  .state .demo {
+    background: var(--surface-2); border-radius: 10px; padding: 12px 14px;
+    font-size: 13px; color: var(--text-2); line-height: 1.45;
+  }
+  .state .demo em { color: var(--text-3); font-style: normal; }
+
+  /* ---- anatomy list ---- */
+  .anatomy {
+    display: grid; gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    list-style: none; margin: 0; padding: 0;
+  }
+  .anatomy li {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 16px 18px;
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .anatomy dt, .anatomy .k {
+    font-size: 11px; font-weight: 600; letter-spacing: .07em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  .anatomy .v { font-size: 14px; color: var(--text-2); line-height: 1.5; }
+
+  /* ---- legend ---- */
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 10px 20px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px 18px; font-size: 13px; color: var(--text-2);
+  }
+  .legend b { font-variant-numeric: tabular-nums; }
+  .legend .k-strong b { color: var(--success); }
+  .legend .k-good b { color: var(--accent); }
+  .legend .k-edge b { color: var(--warning); }
+  .legend .k-cut b { color: var(--text-3); }
+
+  a:focus-visible, .title:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px;
+  }
+
+  @media (max-width: 560px) {
+    .page { padding: 32px 14px 64px; gap: 36px; }
+    .email-inner { padding: 22px 16px 24px; }
+    .posting { grid-template-columns: 44px 1fr; gap: 12px; padding: 15px; }
+    h1 { font-size: 24px; }
+    .subject { font-size: 19px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <div class="eyebrow">Design mockup · Gate 2 review</div>
+    <h1>Morning Job Digest</h1>
+    <p class="lede">
+      The email is the entire product. There is no dashboard and no app to open — if this
+      email doesn't earn its place in the inbox at 7am, nothing else in the system matters.
+    </p>
+    <div class="notice">
+      <strong>Mockup</strong>
+      <span>Every company, role, and score below is invented placeholder content used to
+      evaluate the layout. These are not real job listings.</span>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>The daily email</h2>
+      <p class="section-note">
+        Shown at true email width. Each row answers one question — <em>should I open this?</em> —
+        so the score, the reason, and the dealbreakers are all readable without tapping through.
+      </p>
+    </div>
+
+    <div class="frame">
+      <div class="client-bar">
+        <div class="dots"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
+        <span class="from">Job Digest</span>
+        <span>to me · 07:02</span>
+      </div>
+
+      <article class="email">
+        <div class="email-inner">
+          <h2 class="subject">3 new roles worth a look</h2>
+          <p class="meta">Friday, 31 July · 34 companies checked · 11 new postings, 3 above threshold</p>
+
+          <div class="postings">
+
+            <article class="posting s-strong">
+              <div class="score">
+                <span class="score-num">92</span>
+                <span class="score-label">Match</span>
+              </div>
+              <div class="body">
+                <div class="title-row">
+                  <a class="title" href="#">Staff Engineer, Developer Platform</a>
+                  <span class="company">Northwind Systems</span>
+                </div>
+                <div class="facts">
+                  <span><i class="glyph">◍</i>Remote · EU</span>
+                  <span><i class="glyph">◷</i>Posted 14h ago</span>
+                  <span><i class="glyph">▤</i>Greenhouse</span>
+                </div>
+                <p class="reason">
+                  Platform and developer-experience ownership at exactly your seniority band,
+                  fully remote within the EU, and the team is explicitly described as
+                  infrastructure-facing rather than product-facing.
+                </p>
+                <div class="tags">
+                  <span class="tag hit">developer experience</span>
+                  <span class="tag hit">platform</span>
+                  <span class="tag hit">staff level</span>
+                  <span class="tag">Go · Kubernetes</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="posting s-good">
+              <div class="score">
+                <span class="score-num">78</span>
+                <span class="score-label">Match</span>
+              </div>
+              <div class="body">
+                <div class="title-row">
+                  <a class="title" href="#">Engineering Manager, Core Services</a>
+                  <span class="company">Halcyon Labs</span>
+                </div>
+                <div class="facts">
+                  <span><i class="glyph">◍</i>Brussels · Hybrid, 2 days</span>
+                  <span><i class="glyph">◷</i>Posted 2h ago</span>
+                  <span><i class="glyph">▤</i>Lever</span>
+                </div>
+                <p class="reason">
+                  Strong location and seniority fit, but this is a people-management track
+                  rather than an individual-contributor one — worth a look only if you're
+                  open to stepping back from hands-on work.
+                </p>
+                <div class="tags">
+                  <span class="tag hit">Brussels</span>
+                  <span class="tag hit">distributed systems</span>
+                  <span class="tag warn">management track</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="posting s-edge">
+              <div class="score">
+                <span class="score-num">67</span>
+                <span class="score-label">Match</span>
+              </div>
+              <div class="body">
+                <div class="title-row">
+                  <a class="title" href="#">Principal Engineer, Data Infrastructure</a>
+                  <span class="company">Verity Analytics</span>
+                </div>
+                <div class="facts">
+                  <span><i class="glyph">◍</i>Amsterdam · On-site</span>
+                  <span><i class="glyph">◷</i>Posted 6h ago</span>
+                  <span><i class="glyph">▤</i>Ashby</span>
+                </div>
+                <p class="reason">
+                  Right level and a genuine infrastructure remit, but the listing requires
+                  full on-site presence in Amsterdam, which conflicts with your stated
+                  location preferences.
+                </p>
+                <div class="tags">
+                  <span class="tag hit">principal level</span>
+                  <span class="tag warn">on-site only</span>
+                  <span class="tag warn">relocation implied</span>
+                </div>
+              </div>
+            </article>
+
+          </div>
+
+          <footer class="email-foot">
+            <div class="stat-line">8 postings filtered out below the 65 threshold.</div>
+            <div>Tune what reaches you by editing <a href="#">config/profile.yaml</a>.</div>
+          </footer>
+        </div>
+      </article>
+    </div>
+
+    <div class="legend">
+      <span class="k-strong"><b>85–100</b> — strong fit, open it first</span>
+      <span class="k-good"><b>70–84</b> — solid fit with a caveat</span>
+      <span class="k-edge"><b>65–69</b> — borderline, shown so you can judge</span>
+      <span class="k-cut"><b>&lt; 65</b> — filtered out, never sent</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>The states that decide whether you trust it</h2>
+      <p class="section-note">
+        A digest that only looks good on a perfect day isn't designed yet. These are the
+        two runs that determine whether this stays in your inbox or gets muted.
+      </p>
+    </div>
+
+    <div class="states">
+      <div class="state">
+        <h3>Quiet day <span class="pill quiet">No email sent</span></h3>
+        <p>
+          Nothing scored above threshold, so nothing arrives. A daily
+          "0 new roles today" message would train you to ignore the sender within a week —
+          silence is the design, not a gap in it.
+        </p>
+        <div class="demo"><em>Inbox unchanged. Run logged, state saved.</em></div>
+      </div>
+
+      <div class="state">
+        <h3>Scoring unavailable <span class="pill warn">Degrades to noisy</span></h3>
+        <p>
+          If the Claude API is down after retries, new postings that passed the rule filter
+          are sent <strong>unscored and clearly marked</strong> rather than dropped. A missed
+          role is invisible and unfixable; an extra row costs three seconds.
+        </p>
+        <div class="demo">
+          <strong>2 new roles — not scored</strong><br>
+          <em>Scoring was unavailable this morning. These passed the basic filters and are
+          listed unranked so you don't miss them.</em>
+        </div>
+      </div>
+
+      <div class="state">
+        <h3>Crawl partly failed <span class="pill bad">Reported, not hidden</span></h3>
+        <p>
+          One company's site being down never stops the other 33. Failures are named in the
+          footer so a silently broken adapter can't masquerade as a quiet day.
+        </p>
+        <div class="demo">
+          <em>33 of 34 companies checked. Could not reach: Verity Analytics.</em>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Why each element is there</h2>
+      <p class="section-note">
+        Nothing in the row is decorative — if an element doesn't change your open-or-skip
+        decision, it shouldn't survive to v1.
+      </p>
+    </div>
+    <ul class="anatomy">
+      <li>
+        <span class="k">Score, not a rank</span>
+        <span class="v">An absolute 0–100 lets you calibrate your threshold over time.
+        A ranked list would hide that today's best role is mediocre.</span>
+      </li>
+      <li>
+        <span class="k">One-sentence reason</span>
+        <span class="v">The single highest-value field. It's what lets you skip a role
+        confidently without opening it — which is the entire time saving.</span>
+      </li>
+      <li>
+        <span class="k">Concerns surfaced, not buried</span>
+        <span class="v">Amber tags name the dealbreaker up front. A digest that only
+        shows upside becomes a digest you stop believing.</span>
+      </li>
+      <li>
+        <span class="k">Source shown</span>
+        <span class="v">Knowing a role came from Greenhouse versus HTML scraping tells you
+        how much to trust it, and which adapter to blame when something looks wrong.</span>
+      </li>
+      <li>
+        <span class="k">Counts in the footer</span>
+        <span class="v">"34 checked, 11 new, 8 filtered" is the proof the system ran
+        properly. Without it, a quiet day and a broken crawl look identical.</span>
+      </li>
+      <li>
+        <span class="k">Link to your own config</span>
+        <span class="v">Every digest ends by reminding you the filter is yours to tune.
+        Week-one quality comes from editing that file, not from changing code.</span>
+      </li>
+    </ul>
+  </section>
+
+</div>
