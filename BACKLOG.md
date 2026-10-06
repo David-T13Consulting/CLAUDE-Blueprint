@@ -41,3 +41,4 @@
 | ✅ | Upgrade all 23 files to 4/5 domain expertise | 2026-04-01 |
 | ✅ | Human eval rubric for Product Owner gate reviews | 2026-04-01 |
 | ✅ | Blueprint versioning (v1.0.0) + CHANGELOG + UPSTREAM_CANDIDATES template | 2026-04-01 |
+| ✅ | Runnable eval harness, judge runner, red-team cases, and agent harness scaffold | 2026-08-05 |

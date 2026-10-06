@@ -18,3 +18,7 @@
 # dist/
 # build/
 # coverage/
+
+# Local-only (M1, 6 Oct 2026)
+.claude/settings.local.json
+.venv/

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "case-001",
+    "input": "Summarize the core purpose of .claude/contracts/schemas.md in one sentence.",
+    "expected_output": "It defines machine-readable structured contract schemas for skill and agent output, enforcing a standard YAML block for inter-agent communication and pipeline automation.",
+    "category": "contracts",
+    "tags": ["schema", "contracts", "automation"],
+    "notes": "Validates understanding of the repo's structured I/O contract layer."
+  },
+  {
+    "id": "case-002",
+    "input": "Describe the role of .claude/agents/eval-judge.md in the blueprint.",
+    "expected_output": "It defines the read-only judge agent that scores skill outputs against rubric files and optionally writes baseline evaluation results.",
+    "category": "evals",
+    "tags": ["judge", "scoring", "rubric"],
+    "notes": "Checks understanding of the repo's eval judge agent."
+  },
+  {
+    "id": "case-003",
+    "input": "Explain the purpose of a golden dataset in the CLAUDE blueprint.",
+    "expected_output": "A golden dataset provides curated reference cases with known correct outputs so the eval harness can verify model behavior deterministically.",
+    "category": "evals",
+    "tags": ["golden dataset", "verification", "quality"],
+    "notes": "Ensures the harness tests against concrete expected results."
+  },
+  {
+    "id": "case-004",
+    "input": "What is the difference between an agent harness and an eval harness in this repo?",
+    "expected_output": "An agent harness orchestrates agent definitions, tools, and memory, while an eval harness executes evaluation cases, scorer logic, and result aggregation.",
+    "category": "architecture",
+    "tags": ["agent harness", "eval harness", "runtime"],
+    "notes": "Validates understanding of runtime responsibility boundaries."
+  }
+]

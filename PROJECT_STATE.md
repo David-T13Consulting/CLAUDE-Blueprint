@@ -32,3 +32,4 @@
 - **2026-04-01**: Upgraded all 23 skill/agent/rubric files to 4/5 domain expertise
 - **2026-04-01**: Added human eval rubric for Product Owner gate reviews
 - **2026-04-01**: Added blueprint versioning (v1.0.0), CHANGELOG, UPSTREAM_CANDIDATES, learning loop backlog (B-001 through B-008)
+- **2026-08-05**: Implemented runnable eval harness and agent harness scaffold, added golden dataset and red-team validation flow
